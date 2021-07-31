@@ -14,9 +14,12 @@ jobs:
               run: |
                   sudo apt-get update 
                   sudo apt-get install build-essential cmake valgrind
-            
+
             - name: SETUP - Ensure it is all set
               run: |
                   cmake --version
                   g++ --version
+
+            - name: BASIC TEST
+              run: cmake -S . -B build && cmake --build build && valgrind build/DummyMain
 
