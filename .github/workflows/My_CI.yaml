@@ -2,6 +2,9 @@ name: My_CI
 
 on: [ push, pull_request ]
 
+env:
+    BUILD_DIR: build
+
 jobs:
     main-job:
         runs-on: ubuntu-latest
@@ -21,5 +24,9 @@ jobs:
                   g++ --version
 
             - name: BASIC TEST
-              run: cmake -S . -B build && cmake --build build && valgrind build/DummyMain
+              run: |
+                  cmake -S . -B {{ env.BUILD_DIR }} 
+                  cmake --build {{ env.BUILD_DIR }} 
+                  valgrind {{ env.BUILD_DIR }}/DummyMain
+                  rm -rf {{ env.BUILD_DIR }}
 
