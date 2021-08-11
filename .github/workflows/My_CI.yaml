@@ -16,17 +16,14 @@ jobs:
             - name: SETUP - Set up build tools
               run: |
                   sudo apt-get update 
-                  sudo apt-get install build-essential cmake valgrind
+                  sudo apt-get install build-essential cmake=3.18 valgrind
 
             - name: SETUP - Ensure it is all set
               run: |
                   cmake --version
                   g++ --version
 
-            - name: BASIC TEST
+            - name: BUILD - CMake configure
               run: |
                   cmake -S . -B ${{ env.BUILD_DIR }} 
                   cmake --build ${{ env.BUILD_DIR }} 
-                  valgrind ${{ env.BUILD_DIR }}/DummyMain
-                  rm -rf ${{ env.BUILD_DIR }}
-
