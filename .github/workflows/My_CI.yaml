@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-        BUILD_DIR: build
+        BUILD_DIR: ./build/
 
     strategy:
       matrix:
@@ -40,5 +40,6 @@ jobs:
           cmake --build ${{ env.BUILD_DIR }} 
 
       - name: TEST - CTest 
+        working-directory: ${{ env.BUILD_DIR }}
         run: |
           ctest -j10 -C ${{ matrix.CMake_Config }} -T test --output-on-failure -T test --output-on-failure
