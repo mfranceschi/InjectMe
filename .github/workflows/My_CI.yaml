@@ -16,7 +16,7 @@ jobs:
             - name: SETUP - Set up build tools
               run: |
                   sudo apt-get update 
-                  sudo apt-get install build-essential cmake=3.18 valgrind
+                  sudo apt-get install build-essential cmake=3.16 valgrind
 
             - name: SETUP - Ensure it is all set
               run: |
