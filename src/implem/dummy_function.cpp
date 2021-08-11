@@ -8,7 +8,7 @@ namespace mf
     {
         int addIntegersOrThrow(int a, int b)
         {
-            // adapted from https://www.geeksforgeeks.org/check-for-integer-overflow/
+            // adapted from https://stackoverflow.com/questions/55468823/how-to-detect-integer-overflow-in-c
             if ((b > 0) && (a > std::numeric_limits<int>::max() - b))
             {
                 throw std::overflow_error("a+b will overflow");
