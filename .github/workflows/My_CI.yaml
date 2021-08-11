@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        CMake_Configs: [Debug, Release]
+        CMake_Config: [Debug, Release]
       fail-fast: false
 
     steps:
@@ -33,7 +33,7 @@ jobs:
 
       - name: BUILD - CMake configure
         run: |
-          cmake -S . -B ${{ env.BUILD_DIR }} 
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -S . -B ${{ env.BUILD_DIR }} 
 
       - name: BUILD - CMake build
         run: |
@@ -41,4 +41,4 @@ jobs:
 
       - name: TEST - CTest 
         run: |
-          ctest -j10 -C ${{ env.BUILD_DIR }} -T test --output-on-failure -T test --output-on-failure
+          ctest -j10 -C ${{ matrix.CMake_Config }} -T test --output-on-failure -T test --output-on-failure
