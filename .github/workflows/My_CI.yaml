@@ -41,4 +41,4 @@ jobs:
 
       - name: TEST - CTest 
         run: |
-          ctest -j10 -C Debug -T test --output-on-failure -T test --output-on-failure
+          ctest -j10 -C ${{ env.BUILD_DIR }} -T test --output-on-failure -T test --output-on-failure
