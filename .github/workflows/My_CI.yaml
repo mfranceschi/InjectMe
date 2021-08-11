@@ -26,4 +26,7 @@ jobs:
             - name: BUILD - CMake configure
               run: |
                   cmake -S . -B ${{ env.BUILD_DIR }} 
+
+            - name: BUILD - CMake build
+              run: |
                   cmake --build ${{ env.BUILD_DIR }} 
