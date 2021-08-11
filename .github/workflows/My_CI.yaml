@@ -1,0 +1,32 @@
+name: My_CI
+
+on: [ push, pull_request ]
+
+env:
+    BUILD_DIR: build
+
+jobs:
+    main-job:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: SETUP - Checkout git repo
+              uses: actions/checkout@v2
+
+            - name: SETUP - Set up build tools
+              run: |
+                  sudo apt-get update 
+                  sudo apt-get install build-essential cmake=3.16.3-1ubuntu1 valgrind
+
+            - name: SETUP - Ensure it is all set
+              run: |
+                  cmake --version
+                  g++ --version
+
+            - name: BUILD - CMake configure
+              run: |
+                  cmake -S . -B ${{ env.BUILD_DIR }} 
+
+            - name: BUILD - CMake build
+              run: |
+                  cmake --build ${{ env.BUILD_DIR }} 
