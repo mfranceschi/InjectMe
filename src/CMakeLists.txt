@@ -2,12 +2,12 @@
 add_library(MF_InjectMe STATIC)
 
 set(PUBLIC_HEADERS
-    headers/InjectMe.hpp
+    include/InjectMe.hpp
 )
 set(PRIVATE_HEADERS
 )
 set(PRIVATE_IMPLEMENTATIONS
-    implem/dummy_function.cpp
+    src/dummy_function.cpp
 )
 
 target_sources(
@@ -17,6 +17,6 @@ target_sources(
 )
 target_include_directories(
     MF_InjectMe
-    PUBLIC ./headers/
-    PRIVATE ./implem/
+    PUBLIC ./include/
+    PRIVATE ./src/
 )
