@@ -23,7 +23,7 @@ jobs:
 
       - name: SETUP - Set up build tools
         run: |
-          sudo apt-get update 
+          sudo apt-get update
           sudo apt-get install build-essential cmake=3.16.3-1ubuntu1 valgrind
 
       - name: SETUP - Ensure it is all set
@@ -33,7 +33,7 @@ jobs:
 
       - name: BUILD - CMake configure
         run: |
-          cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -S . -B ${{ env.BUILD_DIR }} 
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -S . -B ${{ env.BUILD_DIR }}
 
       - name: BUILD - CMake build
         run: |
@@ -64,7 +64,7 @@ jobs:
       - name: SETUP - Set up build tools
         if: ${{ false }}
         run: |
-          sudo apt-get update 
+          sudo apt-get update
           sudo apt-get install build-essential cmake=3.16.3-1ubuntu1
 
       - name: CHECK - Clang-Format

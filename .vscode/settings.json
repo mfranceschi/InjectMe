@@ -61,5 +61,6 @@
         "variant": "cpp"
     },
     "clang-format.executable": "clang-format",
-    "C_Cpp.formatting": "clangFormat"
+    "C_Cpp.formatting": "clangFormat",
+    "files.trimTrailingWhitespace": true
 }
