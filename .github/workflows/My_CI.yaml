@@ -1,32 +1,74 @@
 name: My_CI
 
-on: [ push, pull_request ]
+on: [ push ]
 
 env:
     BUILD_DIR: build
 
 jobs:
-    main-job:
-        runs-on: ubuntu-latest
+  build-and-test:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: SETUP - Checkout git repo
-              uses: actions/checkout@v2
+    env:
+        BUILD_DIR: ./build/
 
-            - name: SETUP - Set up build tools
-              run: |
-                  sudo apt-get update 
-                  sudo apt-get install build-essential cmake=3.16.3-1ubuntu1 valgrind
+    strategy:
+      matrix:
+        CMake_Config: [Debug, Release]
+      fail-fast: false
 
-            - name: SETUP - Ensure it is all set
-              run: |
-                  cmake --version
-                  g++ --version
+    steps:
+      - name: SETUP - Checkout git repo
+        uses: actions/checkout@v2
 
-            - name: BUILD - CMake configure
-              run: |
-                  cmake -S . -B ${{ env.BUILD_DIR }} 
+      - name: SETUP - Set up build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential cmake=3.16.3-1ubuntu1 valgrind
 
-            - name: BUILD - CMake build
-              run: |
-                  cmake --build ${{ env.BUILD_DIR }} 
+      - name: SETUP - Ensure it is all set
+        run: |
+          cmake --version
+          g++ --version
+
+      - name: BUILD - CMake configure
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -S . -B ${{ env.BUILD_DIR }}
+
+      - name: BUILD - CMake build
+        run: |
+          cmake --build ${{ env.BUILD_DIR }} -j10
+
+      - name: TEST - CTest for unit tests
+        working-directory: ${{ env.BUILD_DIR }}
+        run: |
+          ctest -j10 -C ${{ matrix.CMake_Config }} -T test --output-on-failure -L "UnitTests"
+
+      - name: TEST - CTest for integration tests
+        working-directory: ${{ env.BUILD_DIR }}
+        run: |
+          ctest -j10 -C ${{ matrix.CMake_Config }} -T test -L "IntegrationTests"
+
+  code-quality:
+    runs-on: ubuntu-latest
+
+    env:
+        BUILD_DIR: ./build/
+        CLANG_VERSION: 10
+        CMake_Config: Release
+
+    steps:
+      - name: SETUP - Checkout git repo
+        uses: actions/checkout@v2
+
+      - name: SETUP - Set up build tools
+        if: ${{ false }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential cmake=3.16.3-1ubuntu1
+
+      - name: CHECK - Clang-Format
+        uses: DoozyX/clang-format-lint-action@v0.12
+        with:
+          source: 'InjectMe tests'
+          clangFormatVersion: ${{ env.CLANG_VERSION }}
