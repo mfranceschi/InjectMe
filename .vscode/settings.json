@@ -59,5 +59,7 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp"
-    }
+    },
+    "clang-format.executable": "clang-format",
+    "C_Cpp.formatting": "clangFormat"
 }

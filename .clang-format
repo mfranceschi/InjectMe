@@ -1,0 +1,7 @@
+BasedOnStyle: Google
+
+NamespaceIndentation: All
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterNamespace: true
