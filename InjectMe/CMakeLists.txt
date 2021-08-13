@@ -5,8 +5,11 @@ set(PUBLIC_HEADERS
     include/InjectMe.hpp
 )
 set(PRIVATE_HEADERS
+    src/ConfigImpl.hpp
 )
 set(PRIVATE_IMPLEMENTATIONS
+    src/Config.cpp
+    src/ConfigImpl.cpp
     src/dummy_function.cpp
 )
 
