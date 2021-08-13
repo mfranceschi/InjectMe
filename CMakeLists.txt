@@ -3,7 +3,7 @@ project(Mfranceschi_InjectMe LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_subdirectory(src)
+add_subdirectory(InjectMe)
 
 enable_testing()
 add_subdirectory(tests)

@@ -43,3 +43,29 @@ jobs:
         working-directory: ${{ env.BUILD_DIR }}
         run: |
           ctest -j10 -C ${{ matrix.CMake_Config }} -T test --output-on-failure -T test --output-on-failure
+
+  code-quality:
+    runs-on: ubuntu-latest
+
+    env:
+        BUILD_DIR: ./build/
+        CLANG_VERSION: 12
+
+    steps:
+      - name: SETUP - Checkout git repo
+        uses: actions/checkout@v2
+
+      - name: SETUP - Set up build tools
+        run: |
+          sudo apt-get update 
+          sudo apt-get install build-essential cmake=3.16.3-1ubuntu1
+
+      - name: BUILD - CMake configure
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -S . -B ${{ env.BUILD_DIR }} 
+
+      - name: CHECK - Clang-Format
+        uses: DoozyX/clang-format-lint-action@v0.12
+        with:
+          source: 'InjectMe tests'
+          clangFormatVersion: ${{ env.CLANG_VERSION }}
