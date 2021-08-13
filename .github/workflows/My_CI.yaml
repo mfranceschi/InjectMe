@@ -57,13 +57,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: SETUP - Set up build tools
+        if: ${{ false }}
         run: |
           sudo apt-get update 
           sudo apt-get install build-essential cmake=3.16.3-1ubuntu1
-
-      - name: BUILD - CMake configure
-        run: |
-          cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -S . -B ${{ env.BUILD_DIR }} 
 
       - name: CHECK - Clang-Format
         uses: DoozyX/clang-format-lint-action@v0.12
