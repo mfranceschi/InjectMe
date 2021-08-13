@@ -15,4 +15,8 @@ add_executable(
 target_link_libraries(InjectMe_GoogleTests gtest_main MF_InjectMe)
 
 include(GoogleTest)
-gtest_discover_tests(InjectMe_GoogleTests)
+gtest_discover_tests(
+    InjectMe_GoogleTests
+    PROPERTIES
+        LABELS "UnitTests"
+)
