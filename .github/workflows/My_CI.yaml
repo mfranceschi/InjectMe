@@ -37,7 +37,7 @@ jobs:
 
       - name: BUILD - CMake build
         run: |
-          cmake --build ${{ env.BUILD_DIR }} 
+          cmake --build ${{ env.BUILD_DIR }} -j10
 
       - name: TEST - CTest 
         working-directory: ${{ env.BUILD_DIR }}
@@ -50,6 +50,7 @@ jobs:
     env:
         BUILD_DIR: ./build/
         CLANG_VERSION: 10
+        CMake_Config: Release
 
     steps:
       - name: SETUP - Checkout git repo
