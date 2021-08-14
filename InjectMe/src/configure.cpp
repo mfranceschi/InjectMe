@@ -10,7 +10,7 @@ namespace mf
         throw std::invalid_argument("InjectMe::configure - configPtr is a null pointer");
       }
 
-      auto configImplPtr = dynamic_cast<ConfigImpl*>(configPtr.get());
+      const auto* configImplPtr = dynamic_cast<const ConfigImpl*>(configPtr.get());
       if (configImplPtr == nullptr) {
         throw std::invalid_argument("InjectMe::configure - internal type error");
       }

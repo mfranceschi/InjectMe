@@ -7,7 +7,8 @@
 using mf::InjectMe::Config;
 
 TEST(Config, itCanGetInstance) {
-  std::unique_ptr<Config> config1, config2;
+  std::unique_ptr<Config> config1;
+  std::unique_ptr<Config> config2;
   ASSERT_NO_THROW(config1 = Config::getInstance());
   ASSERT_NO_THROW(config2 = Config::getInstance());
 
@@ -24,7 +25,7 @@ class ConfigAddIntType : public ::testing::Test {
   std::unique_ptr<Config> config;
 
   void SetUp() override {
-    auto providedValue = intTypeProvider();
+    auto* providedValue = intTypeProvider();
     EXPECT_TRUE(*providedValue == VALUE);
     delete providedValue;
     config = Config::getInstance();
@@ -38,4 +39,8 @@ TEST_F(ConfigAddIntType, itCanAdd) {
 TEST_F(ConfigAddIntType, itThrowsOnDuplicate) {
   config->add<int>(intTypeProvider);
   ASSERT_THROW(config->add<int>(intTypeProvider), std::logic_error);
+}
+
+TEST_F(ConfigAddIntType, itReturnsThisOnAdd) {
+  ASSERT_EQ(config->add<int>(intTypeProvider), config.get());
 }

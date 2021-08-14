@@ -19,8 +19,7 @@ namespace mf
     class Config {
      public:
       template <typename T>
-      using ProviderFct = std::function<std::add_pointer_t<T>(void)>;
-
+      using ProviderFct = std::function<T*(void)>;
       using ConfigPtr = std::unique_ptr<Config>;
 
       /**
@@ -52,9 +51,8 @@ namespace mf
     template <typename T>
     Config* Config::add(const ProviderFct<T>& provider) {
       const std::type_info& typeInfo = typeid(T);
-      ProviderFct<void> castedProvider = [provider]() {
-        return static_cast<void*>(provider());
-      };
+      ProviderFct<void> castedProvider = provider;
+
       this->setProviderForType(castedProvider, typeInfo);
       return this;
     }

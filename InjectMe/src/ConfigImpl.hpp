@@ -10,7 +10,7 @@ namespace mf
   namespace InjectMe
   {
     class ConfigImpl : public Config {
-     protected:
+     private:
       void setProviderForType(const ProviderFct<void>&, const std::type_info&) override;
       bool hasProviderForType(const std::type_index&) const;
 

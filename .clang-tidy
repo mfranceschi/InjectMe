@@ -1,0 +1,5 @@
+Checks:          'cppcoreguidelines-*,misc-*,performance-*,portability-*,readability-*'
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+FormatStyle:     none
+User:            user
