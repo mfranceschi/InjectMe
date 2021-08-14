@@ -15,6 +15,8 @@ namespace mf
       bool hasProviderForType(const std::type_index&) const;
 
       std::map<std::type_index, ProviderFct<void>> mapTypesToProviders;
+
+      friend void configure(const Config::ConfigPtr&);
     };
   }  // namespace InjectMe
 }  // namespace mf

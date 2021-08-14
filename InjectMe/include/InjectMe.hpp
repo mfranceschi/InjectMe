@@ -29,7 +29,7 @@ namespace mf
       static ConfigPtr getInstance();
 
       /**
-       * Registers a provider function for the given type.
+       * Sets a provider function for the given type.
        * @param provider The provider callable (no argument, returns a pointer).
        * @returns this.
        * @throws TODO if a provider function is already registered for the given type.
@@ -43,6 +43,8 @@ namespace mf
 
     /**
      * Configures InjectMe with the given Config instance.
+     * @throws std::invalid_argument if the pointer is invalid.
+     * @throws std::logic_error if no provider has been set.
      */
     void configure(const Config::ConfigPtr&);
 

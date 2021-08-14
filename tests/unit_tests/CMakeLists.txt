@@ -10,10 +10,11 @@ FetchContent_MakeAvailable(googletest)
 add_executable(
     InjectMe_GoogleTests
     Config_tests.cpp
+    configure_tests.cpp
     dummy_function_tests.cpp
     tests_main.cpp
 )
-target_link_libraries(InjectMe_GoogleTests gtest_main MF_InjectMe)
+target_link_libraries(InjectMe_GoogleTests gtest_main gmock MF_InjectMe)
 
 include(GoogleTest)
 gtest_discover_tests(
