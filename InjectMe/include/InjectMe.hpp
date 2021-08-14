@@ -31,13 +31,13 @@ namespace mf
        * Sets a provider function for the given type.
        * @param provider The provider callable (no argument, returns a pointer).
        * @returns this.
-       * @throws TODO if a provider function is already registered for the given type.
+       * @throws std::logic_error if a provider function is already registered for the given type.
        */
       template <typename T>
       Config* add(const ProviderFct<T>& provider);
 
      protected:
-      virtual void setProviderForType(const ProviderFct<void>&, const std::type_info&) = 0;
+      virtual void setProviderForTypeOrThrow(const ProviderFct<void>&, const std::type_info&) = 0;
     };
 
     /**
@@ -53,7 +53,7 @@ namespace mf
       const std::type_info& typeInfo = typeid(T);
       ProviderFct<void> castedProvider = provider;
 
-      this->setProviderForType(castedProvider, typeInfo);
+      this->setProviderForTypeOrThrow(castedProvider, typeInfo);
       return this;
     }
   }  // namespace InjectMe

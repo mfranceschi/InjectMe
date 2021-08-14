@@ -20,7 +20,7 @@ TEST(Configure, itThrowsIfNoProviderHasBeenSet) {
 
 class MockConfig : public Config {
  public:
-  MOCK_METHOD(void, setProviderForType, (const ProviderFct<void>&, const std::type_info&),
+  MOCK_METHOD(void, setProviderForTypeOrThrow, (const ProviderFct<void>&, const std::type_info&),
               (override));
 };
 

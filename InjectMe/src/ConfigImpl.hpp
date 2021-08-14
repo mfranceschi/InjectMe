@@ -11,8 +11,11 @@ namespace mf
   {
     class ConfigImpl : public Config {
      private:
-      void setProviderForType(const ProviderFct<void>&, const std::type_info&) override;
+      void setProviderForTypeOrThrow(const ProviderFct<void>&, const std::type_info&) override;
+
       bool hasProviderForType(const std::type_index&) const;
+      void setProviderForType(const ProviderFct<void>&, const std::type_index&);
+      static void throwErrorForDuplicate(const std::type_index&);
 
       std::map<std::type_index, ProviderFct<void>> mapTypesToProviders;
 
