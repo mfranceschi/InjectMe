@@ -36,6 +36,8 @@ namespace mf
       template <typename T>
       Config* add(const ProviderFct<T>& provider);
 
+      virtual ~Config() = default;
+
      protected:
       virtual void setProviderForTypeOrThrow(const ProviderFct<void>&, const std::type_info&) = 0;
     };
