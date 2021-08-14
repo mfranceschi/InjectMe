@@ -1,7 +1,6 @@
 #include <functional>
 #include <memory>
 #include <type_traits>
-#include <typeindex>
 #include <typeinfo>
 
 namespace mf
@@ -18,12 +17,14 @@ namespace mf
     class Config {
      public:
       template <typename T>
-      using ProviderPtr = std::function<std::add_pointer_t<T>(void)>;
+      using ProviderFct = std::function<std::add_pointer_t<T>(void)>;
+
+      using ConfigPtr = std::unique_ptr<Config>;
 
       /**
        * Creates and returns an instance.
        */
-      static std::unique_ptr<Config> getInstance();
+      static ConfigPtr getInstance();
 
       /**
        * Registers a provider function for the given type.
@@ -33,17 +34,23 @@ namespace mf
        * type.
        */
       template <typename T>
-      Config* add(const ProviderPtr<T>& provider);
+      Config* add(const ProviderFct<T>& provider);
 
      protected:
-      virtual void setProviderForType(const ProviderPtr<void>&,
+      virtual void setProviderForType(const ProviderFct<void>&,
                                       const std::type_info&) = 0;
     };
 
+    /**
+     * Configures InjectMe with the given Config instance.
+     */
+    void configure(const Config::ConfigPtr&);
+
+    // ----- INLINE AND TEMPLATE IMPLEMENTATIONS ----- //
     template <typename T>
-    Config* Config::add(const ProviderPtr<T>& provider) {
+    Config* Config::add(const ProviderFct<T>& provider) {
       const std::type_info& typeInfo = typeid(T);
-      ProviderPtr<void> castedProvider = [provider]() {
+      ProviderFct<void> castedProvider = [provider]() {
         return static_cast<void*>(provider());
       };
       this->setProviderForType(castedProvider, typeInfo);

@@ -18,7 +18,7 @@ class ConfigAddIntType : public ::testing::Test {
  protected:
   using TypeToAdd = int;
   static constexpr int VALUE = 42;
-  Config::ProviderPtr<int> intTypeProvider = []() { return new int(VALUE); };
+  Config::ProviderFct<int> intTypeProvider = []() { return new int(VALUE); };
   std::unique_ptr<Config> config;
 
   void SetUp() override {
@@ -34,7 +34,6 @@ TEST_F(ConfigAddIntType, itCanAdd) {
 }
 
 TEST_F(ConfigAddIntType, itThrowsOnDuplicate) {
-  GTEST_SKIP() << "Waiting for the exception type to check.";
   config->add<int>(intTypeProvider);
   ASSERT_THROW(config->add<int>(intTypeProvider), std::logic_error);
 }

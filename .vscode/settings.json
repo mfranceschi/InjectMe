@@ -62,5 +62,7 @@
     },
     "clang-format.executable": "clang-format",
     "C_Cpp.formatting": "clangFormat",
-    "files.trimTrailingWhitespace": true
+    "files.trimTrailingWhitespace": true,
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cmake.generator": "Unix Makefiles"
 }

@@ -1,4 +1,5 @@
 #include <map>
+#include <typeindex>
 
 #include "InjectMe.hpp"
 
@@ -8,9 +9,11 @@ namespace mf
   {
     class ConfigImpl : public Config {
      protected:
-      void setProviderForType(const ProviderPtr<void>&,
+      void setProviderForType(const ProviderFct<void>&,
                               const std::type_info&) override;
-      std::map<std::type_index, ProviderPtr<void>> typesToProviders;
+
+      bool hasProviderForType(const std::type_index&) const;
+      std::map<std::type_index, ProviderFct<void>> mapTypesToProviders;
     };
   }  // namespace InjectMe
 }  // namespace mf
