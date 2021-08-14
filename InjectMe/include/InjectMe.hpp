@@ -36,9 +36,14 @@ namespace mf
       template <typename T>
       Config* add(const ProviderFct<T>& provider);
 
+      explicit Config(const Config&) = delete;
+      explicit Config(const Config&&) = delete;
+      Config& operator=(const Config&) = delete;
+      Config& operator=(const Config&&) = delete;
       virtual ~Config() = default;
 
      protected:
+      Config() = default;
       virtual void setProviderForTypeOrThrow(const ProviderFct<void>&, const std::type_info&) = 0;
     };
 
@@ -49,6 +54,18 @@ namespace mf
      */
     void configure(const Config::ConfigPtr&);
 
+    template <typename T>
+    using Injected = T*;
+
+    /**
+     * @returns an Injected instance for the given type (create if never queried before).
+     * @throws std::logic_error if no Provider is known for that type.
+     */
+    template <typename T>
+    Injected<T> inject();
+
+    Injected<void> injectForTypeOrThrow(const std::type_info&);
+
     // ----- INLINE AND TEMPLATE IMPLEMENTATIONS ----- //
     template <typename T>
     Config* Config::add(const ProviderFct<T>& provider) {
@@ -57,6 +74,11 @@ namespace mf
 
       this->setProviderForTypeOrThrow(castedProvider, typeInfo);
       return this;
+    }
+
+    template <typename T>
+    Injected<T> inject() {
+      return static_cast<T*>(injectForTypeOrThrow(typeid(T)));
     }
   }  // namespace InjectMe
 }  // namespace mf
