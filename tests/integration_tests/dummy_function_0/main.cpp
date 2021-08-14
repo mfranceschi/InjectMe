@@ -1,3 +1,5 @@
 #include "InjectMe.hpp"
 
-int main() { return mf::InjectMe::addIntegersOrThrow(-2, 2); }
+int main() {
+  return mf::InjectMe::addIntegersOrThrow(-2, 2);
+}
