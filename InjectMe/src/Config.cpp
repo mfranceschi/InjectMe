@@ -8,5 +8,4 @@ namespace mf
       return std::make_unique<ConfigImpl>();
     }
   }  // namespace InjectMe
-
 }  // namespace mf

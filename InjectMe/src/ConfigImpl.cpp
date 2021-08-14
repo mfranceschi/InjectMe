@@ -14,14 +14,12 @@ namespace mf
         mapTypesToProviders[typeIndex] = provider;
       } else {
         std::ostringstream oss;
-        oss << "Unable to add once again a provider for the type '"
-            << typeIndex.name() << "'.";
+        oss << "Unable to add once again a provider for the type '" << typeIndex.name() << "'.";
         throw std::logic_error(oss.str());
       }
     }
 
-    bool ConfigImpl::hasProviderForType(
-        const std::type_index& typeIndex) const {
+    bool ConfigImpl::hasProviderForType(const std::type_index& typeIndex) const {
       return mapTypesToProviders.find(typeIndex) == mapTypesToProviders.cend();
     }
   }  // namespace InjectMe

@@ -18,7 +18,9 @@ class ConfigAddIntType : public ::testing::Test {
  protected:
   using TypeToAdd = int;
   static constexpr int VALUE = 42;
-  Config::ProviderFct<int> intTypeProvider = []() { return new int(VALUE); };
+  Config::ProviderFct<int> intTypeProvider = []() {
+    return new int(VALUE);
+  };
   std::unique_ptr<Config> config;
 
   void SetUp() override {

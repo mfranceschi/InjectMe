@@ -1,3 +1,5 @@
+#pragma once
+
 #include <functional>
 #include <memory>
 #include <type_traits>
@@ -30,15 +32,13 @@ namespace mf
        * Registers a provider function for the given type.
        * @param provider The provider callable (no argument, returns a pointer).
        * @returns this.
-       * @throws TODO if a provider function is already registered for the given
-       * type.
+       * @throws TODO if a provider function is already registered for the given type.
        */
       template <typename T>
       Config* add(const ProviderFct<T>& provider);
 
      protected:
-      virtual void setProviderForType(const ProviderFct<void>&,
-                                      const std::type_info&) = 0;
+      virtual void setProviderForType(const ProviderFct<void>&, const std::type_info&) = 0;
     };
 
     /**
@@ -50,9 +50,7 @@ namespace mf
     template <typename T>
     Config* Config::add(const ProviderFct<T>& provider) {
       const std::type_info& typeInfo = typeid(T);
-      ProviderFct<void> castedProvider = [provider]() {
-        return static_cast<void*>(provider());
-      };
+      ProviderFct<void> castedProvider = [provider]() { return static_cast<void*>(provider()); };
       this->setProviderForType(castedProvider, typeInfo);
       return this;
     }
