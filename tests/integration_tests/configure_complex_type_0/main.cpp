@@ -7,14 +7,30 @@
 #include "../IntegrationTestHelpers.hpp"
 #include "InjectMe.hpp"
 
-static constexpr double THE_VALUE = 3.1415;
+static constexpr int THE_VALUE = 42;
+
+class MyType {
+ public:
+  MyType() : pointer(new int(THE_VALUE)) {
+  }
+  MyType(const MyType&) = delete;
+  MyType& operator=(const MyType&) = delete;
+  MyType(MyType&&) = delete;
+  MyType& operator=(MyType&&) = delete;
+  ~MyType() {
+    delete pointer;
+  }
+
+ private:
+  const int* const pointer;
+};
 
 void configureInjector() {
   auto injectMeConfig = mf::InjectMe::Config::getInstance();
 
-  injectMeConfig->add<double>([]() {
+  injectMeConfig->add<MyType>([]() {
     callCounter++;
-    return new double(THE_VALUE);
+    return new MyType();
   });
 
   configure(injectMeConfig);
@@ -22,14 +38,8 @@ void configureInjector() {
 
 void runChecks() {
   auto checkValue = []() {
-    auto injected = mf::InjectMe::inject<double>();
-    bool testResult = doublesAreAlmostEqual(*injected, THE_VALUE);
-
-    std::ostringstream errorMessageStream;
-    errorMessageStream << "Unexpected value (expected " << THE_VALUE << "): " << *injected;
-    auto errorMessage = errorMessageStream.str();
-
-    myAssert(testResult, errorMessage);
+    auto injected = mf::InjectMe::inject<MyType>();
+    static_assert(std::is_same<decltype(*injected), MyType&>::value, "Surprising type");
   };
 
   checkCallCount(0);

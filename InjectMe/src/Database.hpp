@@ -30,7 +30,7 @@ namespace mf
       void configureForType(
           const std::type_index& typeIndex, const ProviderFct<void>& providerFunction);
 
-      ~Database() = default;
+      ~Database();
       Database(const Database&) = delete;
       Database& operator=(const Database&) = delete;
       Database(Database&&) = delete;

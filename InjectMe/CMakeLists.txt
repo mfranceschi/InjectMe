@@ -24,6 +24,6 @@ target_sources(
 )
 target_include_directories(
     MF_InjectMe
-    PUBLIC ./include/
-    PRIVATE ./src/
+    PUBLIC include
+    PRIVATE src
 )

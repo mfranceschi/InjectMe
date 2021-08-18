@@ -40,5 +40,13 @@ namespace mf
       mapTypesToData.insert(std::make_pair(typeIndex, typeData));
     }
 
+    Database::~Database() {
+      for (const auto& pair : mapTypesToData) {
+        const auto& allocatedValue = pair.second.value;
+        if (allocatedValue != nullptr) {
+          delete allocatedValue;
+        }
+      }
+    }
   }  // namespace InjectMe
 }  // namespace mf
