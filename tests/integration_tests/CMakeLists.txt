@@ -1,7 +1,8 @@
 
 set(Integration_Tests_Folders
-  dummy_function_0
   configure_and_exit_0
+  configure_single_type_0
+  dummy_function_0
 )
 
 find_program(

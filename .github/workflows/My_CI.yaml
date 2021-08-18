@@ -46,7 +46,7 @@ jobs:
       - name: TEST - CTest for integration tests
         working-directory: ${{ env.BUILD_DIR }}
         run: |
-          ctest -j10 -C ${{ matrix.CMake_Config }} -T test -L "IntegrationTests"
+          ctest -j10 -C ${{ matrix.CMake_Config }} -T test --output-on-failure -L "IntegrationTests"
 
   code-quality:
     runs-on: ubuntu-latest

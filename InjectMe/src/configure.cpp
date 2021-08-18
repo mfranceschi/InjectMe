@@ -24,7 +24,6 @@ namespace mf
       Database& database = Database::getInstance();
       for (const auto& pair : mapTypesToProviders) {
         const auto& typeIndex = pair.first;
-        const auto& providerFunction = pair.second;
 
         if (database.knowsType(typeIndex)) {
           throw std::logic_error("InjectMe::configure - duplicate entry for some type");

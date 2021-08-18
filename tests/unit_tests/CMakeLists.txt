@@ -19,7 +19,7 @@ target_link_libraries(InjectMe_GoogleTests gtest_main gmock MF_InjectMe)
 include(GoogleTest)
 gtest_discover_tests(
     InjectMe_GoogleTests
-    TEST_PREFIX UnitTests_
+    TEST_PREFIX Unit_Test_
     PROPERTIES
         LABELS "UnitTests"
 )

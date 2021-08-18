@@ -38,7 +38,7 @@ namespace mf
 
      private:
       Database() = default;
-      std::map<std::type_index, TypeData> mapTypesToData;
+      std::map<std::type_index, TypeData> mapTypesToData{};
     };
   }  // namespace InjectMe
 }  // namespace mf
