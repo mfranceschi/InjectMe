@@ -8,13 +8,13 @@ void configureInjector() {
 
   auto injectMeConfig = Config::getInstance();
 
-  Config::ProviderFct<std::string> stringProvider = []() {
+  ProviderFct<std::string> stringProvider = []() {
     std::cout << "Called the string provider function." << std::endl;
     return new std::string("Hello, world!");
   };
   injectMeConfig->add<std::string>(stringProvider);
 
-  Config::ProviderFct<double> doubleProvider = []() {
+  ProviderFct<double> doubleProvider = []() {
     std::cout << "Called the double provider function." << std::endl;
     return new double(10. / 3.);
   };

@@ -16,10 +16,11 @@ namespace mf
      */
     int addIntegersOrThrow(int a, int b);
 
+    template <typename T>
+    using ProviderFct = std::function<T*(void)>;
+
     class Config {
      public:
-      template <typename T>
-      using ProviderFct = std::function<T*(void)>;
       using ConfigPtr = std::unique_ptr<Config>;
 
       /**

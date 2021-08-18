@@ -13,3 +13,5 @@ ColumnLimit: 100
 AllowShortFunctionsOnASingleLine: None
 AllowShortBlocksOnASingleLine: Never
 AllowShortLambdasOnASingleLine: None
+
+AlignAfterOpenBracket: AlwaysBreak

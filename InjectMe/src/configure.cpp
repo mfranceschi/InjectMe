@@ -1,4 +1,5 @@
 #include "ConfigImpl.hpp"
+#include "Database.hpp"
 #include "InjectMe.hpp"
 
 namespace mf
@@ -20,7 +21,22 @@ namespace mf
         throw std::logic_error("InjectMe::configure - no provider has been set");
       }
 
-      // TODO
+      Database& database = Database::getInstance();
+      for (const auto& pair : mapTypesToProviders) {
+        const auto& typeIndex = pair.first;
+        const auto& providerFunction = pair.second;
+
+        if (database.knowsType(typeIndex)) {
+          throw std::logic_error("InjectMe::configure - duplicate entry for some type");
+        }
+      }
+
+      for (const auto& pair : mapTypesToProviders) {
+        const auto& typeIndex = pair.first;
+        const auto& providerFunction = pair.second;
+
+        database.configureForType(typeIndex, providerFunction);
+      }
     }
   }  // namespace InjectMe
 }  // namespace mf

@@ -13,28 +13,28 @@ namespace mf
   namespace InjectMe
   {
     struct TypeData {
-      Config::ProviderFct<void> providerFct = nullptr;
+      ProviderFct<void> providerFct = nullptr;
       Injected<void> value = nullptr;
     };
 
     class Database {
      public:
-      static Database& getInstance() {
-        static Database singleton;
-        return singleton;
-      }
+      static Database& getInstance();
 
-      Injected<void> getForType(const std::type_index& typeIndex) {
-        TypeData& typeData = mapTypesToData.at(typeIndex);  // throws out_of_range
-        if (typeData.value == nullptr) {
-          makeInstanceForType(typeData);
-        }
-        return typeData.value;
-      }
+      Injected<void> getForType(const std::type_index& typeIndex);
 
-      static void makeInstanceForType(TypeData& typeData) {
-        typeData.value = typeData.providerFct();
-      }
+      static void makeInstanceForType(TypeData& typeData);
+
+      bool knowsType(const std::type_index& typeIndex) const;
+
+      void configureForType(
+          const std::type_index& typeIndex, const ProviderFct<void>& providerFunction);
+
+      ~Database() = default;
+      Database(const Database&) = delete;
+      Database& operator=(const Database&) = delete;
+      Database(Database&&) = delete;
+      Database& operator=(Database&&) = delete;
 
      private:
       Database() = default;

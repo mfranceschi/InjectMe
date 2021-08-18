@@ -11,7 +11,8 @@ namespace mf
   {
     class ConfigImpl : public Config {
      private:
-      void setProviderForTypeOrThrow(const ProviderFct<void>&, const std::type_info&) override;
+      void setProviderForTypeOrThrow(
+          const ProviderFct<void>& providerFunction, const std::type_info& typeInfo) override;
 
       bool hasProviderForType(const std::type_index&) const;
       void setProviderForType(const ProviderFct<void>&, const std::type_index&);

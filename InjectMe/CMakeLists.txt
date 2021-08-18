@@ -12,6 +12,7 @@ set(PRIVATE_IMPLEMENTATIONS
     src/Config.cpp
     src/ConfigImpl.cpp
     src/configure.cpp
+    src/Database.cpp
     src/dummy_function.cpp
     src/inject.cpp
 )

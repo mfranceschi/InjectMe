@@ -6,8 +6,8 @@ namespace mf
 {
   namespace InjectMe
   {
-    void ConfigImpl::setProviderForTypeOrThrow(const ProviderFct<void>& provider,
-                                               const std::type_info& typeInfo) {
+    void ConfigImpl::setProviderForTypeOrThrow(
+        const ProviderFct<void>& provider, const std::type_info& typeInfo) {
       auto typeIndex = std::type_index(typeInfo);
 
       if (hasProviderForType(typeIndex)) {
@@ -21,8 +21,8 @@ namespace mf
       return mapTypesToProviders.find(typeIndex) == mapTypesToProviders.cend();
     }
 
-    void ConfigImpl::setProviderForType(const ProviderFct<void>& provider,
-                                        const std::type_index& typeIndex) {
+    void ConfigImpl::setProviderForType(
+        const ProviderFct<void>& provider, const std::type_index& typeIndex) {
       mapTypesToProviders[typeIndex] = provider;
     }
 
