@@ -72,3 +72,8 @@ jobs:
         with:
           source: 'InjectMe tests'
           clangFormatVersion: ${{ env.CLANG_VERSION }}
+
+      - name: CHECK - Clang-Tidy (v11, not v10)
+        uses: HorstBaerbel/action-clang-tidy@1.2
+        with:
+          excludedirs: 'tests/'
