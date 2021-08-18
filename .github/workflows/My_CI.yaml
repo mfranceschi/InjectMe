@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: CHECK - Clang-Format
-        run: ./.github/helpers/clang-format-all .
+        run: bash ./.github/helpers/clang-format-all .
 
       - name: CHECK - Clang-Tidy (v11, not v10)
         uses: HorstBaerbel/action-clang-tidy@1.2
