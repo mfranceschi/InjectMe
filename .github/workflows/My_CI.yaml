@@ -23,8 +23,7 @@ jobs:
 
       - name: SETUP - Set up build tools
         run: |
-          sudo apt-get update
-          sudo apt-get install build-essential cmake=3.16.3-1ubuntu1 valgrind
+          sudo apt-get install valgrind
 
       - name: SETUP - Ensure it is all set
         run: |
@@ -61,17 +60,8 @@ jobs:
       - name: SETUP - Checkout git repo
         uses: actions/checkout@v2
 
-      - name: SETUP - Set up build tools
-        if: ${{ false }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install build-essential cmake=3.16.3-1ubuntu1
-
       - name: CHECK - Clang-Format
-        uses: DoozyX/clang-format-lint-action@v0.12
-        with:
-          source: 'InjectMe tests'
-          clangFormatVersion: ${{ env.CLANG_VERSION }}
+        run: ./.github/helpers/clang-format-all .
 
       - name: CHECK - Clang-Tidy (v11, not v10)
         uses: HorstBaerbel/action-clang-tidy@1.2
