@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(Integration_Test)
-add_executable(Main0)
-target_link_libraries(Main0 PUBLIC $ENV{INJECTME_LIB_FILE})
-target_include_directories(Main0 PUBLIC $ENV{INJECTME_INCLUDE_DIRS})
+add_executable(configure_and_exit_0)
+target_link_libraries(configure_and_exit_0 PUBLIC MF_InjectMe)
+target_include_directories(configure_and_exit_0 PUBLIC MF_InjectMe)
 
-target_sources(Main0 PRIVATE main.cpp)
+target_sources(configure_and_exit_0 PRIVATE main.cpp)
