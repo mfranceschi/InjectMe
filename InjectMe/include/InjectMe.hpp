@@ -68,8 +68,6 @@ namespace mf
     template <typename T>
     Injected<T> inject();
 
-    Injected<void> injectForTypeOrThrow(const std::type_info&);
-
     // ----- IMPLEMENTATIONS ----- //
     namespace internals
     {
@@ -77,9 +75,11 @@ namespace mf
       Deleter makeDeleter() {
         return [](void* pointerToDelete) {
           T* castedPointer = static_cast<T*>(pointerToDelete);
-          delete castedPointer;
+          std::default_delete<T>()(castedPointer);
         };
       }
+
+      Injected<void> injectForTypeOrThrow(const std::type_info&);
     }  // namespace internals
 
     template <typename T>
@@ -94,7 +94,7 @@ namespace mf
 
     template <typename T>
     Injected<T> inject() {
-      return static_cast<T*>(injectForTypeOrThrow(typeid(T)));
+      return static_cast<T*>(internals::injectForTypeOrThrow(typeid(T)));
     }
 
   }  // namespace InjectMe
