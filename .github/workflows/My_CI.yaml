@@ -33,7 +33,7 @@ jobs:
 
       - name: BUILD - CMake build
         run: |
-          cmake --build ${{ env.BUILD_DIR }} -j10
+          cmake --build ${{ env.BUILD_DIR }} -j10 --config=${{ matrix.CMake_Config}} 
 
       - name: TEST - CTest for unit tests
         working-directory: ${{ env.BUILD_DIR }}
