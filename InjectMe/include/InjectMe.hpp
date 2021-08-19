@@ -19,6 +19,8 @@ namespace mf
     template <typename T>
     using ProviderFct = std::function<T*(void)>;
 
+    using Deleter = std::function<void(void*)>;
+
     class Config {
      public:
       using ConfigPtr = std::unique_ptr<Config>;
@@ -45,7 +47,8 @@ namespace mf
 
      protected:
       Config() = default;
-      virtual void setProviderForTypeOrThrow(const ProviderFct<void>&, const std::type_info&) = 0;
+      virtual void setProviderForTypeOrThrow(
+          const ProviderFct<void>&, const std::type_info&, const Deleter&) = 0;
     };
 
     /**
@@ -67,13 +70,25 @@ namespace mf
 
     Injected<void> injectForTypeOrThrow(const std::type_info&);
 
-    // ----- INLINE AND TEMPLATE IMPLEMENTATIONS ----- //
+    // ----- IMPLEMENTATIONS ----- //
+    namespace internals
+    {
+      template <typename T>
+      Deleter makeDeleter() {
+        return [](void* pointerToDelete) {
+          T* castedPointer = static_cast<T*>(pointerToDelete);
+          delete castedPointer;
+        };
+      }
+    }  // namespace internals
+
     template <typename T>
     Config* Config::add(const ProviderFct<T>& provider) {
+      static_assert(!std::is_array<T>::value, "Array types are not allowed.");
       const std::type_info& typeInfo = typeid(T);
       ProviderFct<void> castedProvider = provider;
 
-      this->setProviderForTypeOrThrow(castedProvider, typeInfo);
+      this->setProviderForTypeOrThrow(castedProvider, typeInfo, internals::makeDeleter<T>());
       return this;
     }
 
@@ -81,5 +96,6 @@ namespace mf
     Injected<T> inject() {
       return static_cast<T*>(injectForTypeOrThrow(typeid(T)));
     }
+
   }  // namespace InjectMe
 }  // namespace mf
