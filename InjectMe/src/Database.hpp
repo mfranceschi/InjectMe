@@ -14,6 +14,7 @@ namespace mf
   {
     struct TypeData {
       ProviderFct<void> providerFct = nullptr;
+      Deleter deleterFct = nullptr;
       Injected<void> value = nullptr;
     };
 
@@ -28,7 +29,8 @@ namespace mf
       bool knowsType(const std::type_index& typeIndex) const;
 
       void configureForType(
-          const std::type_index& typeIndex, const ProviderFct<void>& providerFunction);
+          const std::type_index& typeIndex, const ProviderFct<void>& providerFunction,
+          const Deleter& deleterFunction);
 
       ~Database();
       Database(const Database&) = delete;

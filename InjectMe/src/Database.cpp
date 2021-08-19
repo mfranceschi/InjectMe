@@ -34,9 +34,11 @@ namespace mf
     }
 
     void Database::configureForType(
-        const std::type_index& typeIndex, const ProviderFct<void>& providerFunction) {
+        const std::type_index& typeIndex, const ProviderFct<void>& providerFunction,
+        const Deleter& deleterFunction) {
       TypeData typeData;
       typeData.providerFct = providerFunction;
+      typeData.deleterFct = deleterFunction;
       mapTypesToData.insert(std::make_pair(typeIndex, typeData));
     }
 
@@ -44,7 +46,7 @@ namespace mf
       for (const auto& pair : mapTypesToData) {
         const auto& allocatedValue = pair.second.value;
         if (allocatedValue != nullptr) {
-          delete allocatedValue;
+          pair.second.deleterFct(allocatedValue);
         }
       }
     }

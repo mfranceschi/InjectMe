@@ -35,7 +35,7 @@ namespace mf
         const auto& providerFunction = pair.second.first;
         const auto& deleterFunction = pair.second.second;
 
-        database.configureForType(typeIndex, providerFunction);
+        database.configureForType(typeIndex, providerFunction, deleterFunction);
       }
     }
   }  // namespace InjectMe
