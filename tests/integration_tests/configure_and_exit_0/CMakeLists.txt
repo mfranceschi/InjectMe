@@ -1,6 +1,5 @@
 
 add_executable(configure_and_exit_0)
 target_link_libraries(configure_and_exit_0 PUBLIC MF_InjectMe)
-target_include_directories(configure_and_exit_0 PUBLIC MF_InjectMe)
 
 target_sources(configure_and_exit_0 PRIVATE main.cpp)

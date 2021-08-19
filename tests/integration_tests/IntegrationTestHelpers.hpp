@@ -31,3 +31,9 @@ inline void checkCallCount(unsigned int expectedCallCount) {
 
   myAssert(testResult, errorMessage);
 }
+
+#define NO_COPY(className)                         \
+  className(const className&) = delete;            \
+  className& operator=(const className&) = delete; \
+  className(className&&) = delete;                 \
+  className& operator=(className&&) = delete

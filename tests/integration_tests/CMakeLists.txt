@@ -4,6 +4,7 @@ set(Integration_Tests_Folders
   configure_complex_type_0
   configure_single_type_0
   dummy_function_0
+  triple_nested_injections
 )
 
 find_program(
