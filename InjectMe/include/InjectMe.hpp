@@ -9,13 +9,6 @@ namespace mf
 {
   namespace InjectMe
   {
-    /**
-     * Dummy function for testing purpose.
-     * @return the sum of a and b.
-     * @throws std::overflow_error or std::underflow_error.
-     */
-    int addIntegersOrThrow(int a, int b);
-
     template <typename T>
     using ProviderFct = std::function<T*(void)>;
 
@@ -68,7 +61,7 @@ namespace mf
     template <typename T>
     Injected<T> inject();
 
-    // ----- IMPLEMENTATIONS ----- //
+    // ----- IMPLEMENTATIONS and INTERNAL FUNCTIONS ----- //
     namespace internals
     {
       template <typename T>
@@ -80,6 +73,13 @@ namespace mf
       }
 
       Injected<void> injectForTypeOrThrow(const std::type_info&);
+
+      /**
+       * WARNING: ADVANCED USERS ONLY.
+       * Forgets all types and providers configured and deletes all objects.
+       * All Injected<T> pointers are invalidated (they point to freed memory).
+       */
+      void reset();
     }  // namespace internals
 
     template <typename T>
@@ -96,6 +96,13 @@ namespace mf
     Injected<T> inject() {
       return static_cast<T*>(internals::injectForTypeOrThrow(typeid(T)));
     }
+
+    /**
+     * Dummy function for testing purpose.
+     * @return the sum of a and b.
+     * @throws std::overflow_error or std::underflow_error.
+     */
+    int addIntegersOrThrow(int a, int b);
 
   }  // namespace InjectMe
 }  // namespace mf

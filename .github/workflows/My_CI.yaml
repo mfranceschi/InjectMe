@@ -7,7 +7,7 @@ env:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     env:
         BUILD_DIR: ./build/
@@ -15,6 +15,7 @@ jobs:
     strategy:
       matrix:
         CMake_Config: [Debug, Release]
+        os: [ubuntu-latest, windows-latest]
       fail-fast: false
 
     steps:
@@ -22,17 +23,13 @@ jobs:
         uses: actions/checkout@v2
 
       - name: SETUP - Set up build tools
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
           sudo apt-get install valgrind
 
-      - name: SETUP - Ensure it is all set
-        run: |
-          cmake --version
-          g++ --version
-
       - name: BUILD - CMake configure
         run: |
-          cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -S . -B ${{ env.BUILD_DIR }}
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -Wdev -Werror=dev -S . -B ${{ env.BUILD_DIR }}
 
       - name: BUILD - CMake build
         run: |
