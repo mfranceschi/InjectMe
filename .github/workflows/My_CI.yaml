@@ -7,7 +7,7 @@ env:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     env:
         BUILD_DIR: ./build/
@@ -15,6 +15,7 @@ jobs:
     strategy:
       matrix:
         CMake_Config: [Debug, Release]
+        os: [ubuntu-latest, windows-latest]
       fail-fast: false
 
     steps:
@@ -22,22 +23,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: SETUP - Set up build tools
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
-          sudo apt-get update
-          sudo apt-get install build-essential cmake=3.16.3-1ubuntu1 valgrind
-
-      - name: SETUP - Ensure it is all set
-        run: |
-          cmake --version
-          g++ --version
+          sudo apt-get install valgrind
 
       - name: BUILD - CMake configure
         run: |
-          cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -S . -B ${{ env.BUILD_DIR }}
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -Wdev -Werror=dev -S . -B ${{ env.BUILD_DIR }}
 
       - name: BUILD - CMake build
         run: |
-          cmake --build ${{ env.BUILD_DIR }} -j10
+          cmake --build ${{ env.BUILD_DIR }} -j10 --config=${{ matrix.CMake_Config}} 
 
       - name: TEST - CTest for unit tests
         working-directory: ${{ env.BUILD_DIR }}
@@ -47,7 +43,7 @@ jobs:
       - name: TEST - CTest for integration tests
         working-directory: ${{ env.BUILD_DIR }}
         run: |
-          ctest -j10 -C ${{ matrix.CMake_Config }} -T test -L "IntegrationTests"
+          ctest -j10 -C ${{ matrix.CMake_Config }} -T test --output-on-failure -L "IntegrationTests"
 
   code-quality:
     runs-on: ubuntu-latest
@@ -61,17 +57,8 @@ jobs:
       - name: SETUP - Checkout git repo
         uses: actions/checkout@v2
 
-      - name: SETUP - Set up build tools
-        if: ${{ false }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install build-essential cmake=3.16.3-1ubuntu1
-
       - name: CHECK - Clang-Format
-        uses: DoozyX/clang-format-lint-action@v0.12
-        with:
-          source: 'InjectMe tests'
-          clangFormatVersion: ${{ env.CLANG_VERSION }}
+        run: bash ./.github/helpers/clang-format-all .
 
       - name: CHECK - Clang-Tidy (v11, not v10)
         uses: HorstBaerbel/action-clang-tidy@1.2

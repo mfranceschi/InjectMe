@@ -5,9 +5,7 @@
 
 #include "InjectMe.hpp"
 
-using mf::InjectMe::Config;
-using mf::InjectMe::configure;
-using mf::InjectMe::ProviderFct;
+using namespace mf::InjectMe;
 
 TEST(Configure, itThrowsIfPointerIsNull) {
   Config::ConfigPtr configPtr = nullptr;
@@ -22,8 +20,8 @@ TEST(Configure, itThrowsIfNoProviderHasBeenSet) {
 class MockConfig : public Config {
  public:
   MOCK_METHOD(
-      void, setProviderForTypeOrThrow, (const ProviderFct<void>&, const std::type_info&),
-      (override));
+      void, setProviderForTypeOrThrow,
+      (const ProviderFct<void>&, const std::type_info&, const Deleter&), (override));
 };
 
 TEST(Configure, itThrowsIfInstanceIsNotConfigImpl) {

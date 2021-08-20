@@ -15,6 +15,7 @@ set(PRIVATE_IMPLEMENTATIONS
     src/Database.cpp
     src/dummy_function.cpp
     src/inject.cpp
+    src/reset.cpp
 )
 
 target_sources(
@@ -24,6 +25,6 @@ target_sources(
 )
 target_include_directories(
     MF_InjectMe
-    PUBLIC ./include/
-    PRIVATE ./src/
+    PUBLIC include
+    PRIVATE src
 )

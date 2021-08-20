@@ -15,3 +15,4 @@ AllowShortBlocksOnASingleLine: Never
 AllowShortLambdasOnASingleLine: None
 
 AlignAfterOpenBracket: AlwaysBreak
+BinPackParameters: false

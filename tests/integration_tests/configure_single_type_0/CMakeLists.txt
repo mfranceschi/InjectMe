@@ -1,0 +1,5 @@
+
+add_executable(configure_single_type_0)
+target_link_libraries(configure_single_type_0 PUBLIC MF_InjectMe)
+
+target_sources(configure_single_type_0 PRIVATE main.cpp)

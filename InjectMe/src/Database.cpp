@@ -1,11 +1,5 @@
 #include "Database.hpp"
 
-#include <functional>
-#include <map>
-#include <memory>
-#include <type_traits>
-#include <typeindex>
-
 #include "InjectMe.hpp"
 
 namespace mf
@@ -34,11 +28,38 @@ namespace mf
     }
 
     void Database::configureForType(
-        const std::type_index& typeIndex, const ProviderFct<void>& providerFunction) {
+        const std::type_index& typeIndex,
+        const ProviderFct<void>& providerFunction,
+        const Deleter& deleterFunction) {
       TypeData typeData;
       typeData.providerFct = providerFunction;
+      typeData.deleterFct = deleterFunction;
       mapTypesToData.insert(std::make_pair(typeIndex, typeData));
     }
 
+    void Database::reset(bool deletePointers) {
+      if (deletePointers) {
+        this->deletePointers();
+      }
+      mapTypesToData.clear();
+    }
+
+    void Database::deletePointers() {
+      for (const auto& pair : mapTypesToData) {
+        const auto& allocatedValue = pair.second.value;
+        if (allocatedValue != nullptr) {
+          pair.second.deleterFct(allocatedValue);
+        }
+      }
+    }
+
+    Database::~Database() {
+      for (const auto& pair : mapTypesToData) {
+        const auto& allocatedValue = pair.second.value;
+        if (allocatedValue != nullptr) {
+          pair.second.deleterFct(allocatedValue);
+        }
+      }
+    }
   }  // namespace InjectMe
 }  // namespace mf

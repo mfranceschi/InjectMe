@@ -1,9 +1,6 @@
 #pragma once
 
-#include <functional>
 #include <map>
-#include <memory>
-#include <type_traits>
 #include <typeindex>
 
 #include "InjectMe.hpp"
@@ -14,6 +11,7 @@ namespace mf
   {
     struct TypeData {
       ProviderFct<void> providerFct = nullptr;
+      Deleter deleterFct = nullptr;
       Injected<void> value = nullptr;
     };
 
@@ -28,9 +26,13 @@ namespace mf
       bool knowsType(const std::type_index& typeIndex) const;
 
       void configureForType(
-          const std::type_index& typeIndex, const ProviderFct<void>& providerFunction);
+          const std::type_index& typeIndex,
+          const ProviderFct<void>& providerFunction,
+          const Deleter& deleterFunction);
 
-      ~Database() = default;
+      void reset(bool deletePointers = true);
+
+      ~Database();
       Database(const Database&) = delete;
       Database& operator=(const Database&) = delete;
       Database(Database&&) = delete;
@@ -38,7 +40,9 @@ namespace mf
 
      private:
       Database() = default;
-      std::map<std::type_index, TypeData> mapTypesToData;
+      void deletePointers();
+
+      std::map<std::type_index, TypeData> mapTypesToData{};
     };
   }  // namespace InjectMe
 }  // namespace mf
