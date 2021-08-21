@@ -4,6 +4,7 @@ set(Integration_Tests_Folders
   configure_complex_type_0
   configure_single_type_0
   dummy_function_0
+  recursion_is_caught
   triple_nested_injections
 )
 
@@ -35,5 +36,10 @@ endforeach()
 
 get_property(Integration_Tests DIRECTORY . PROPERTY TESTS)
 foreach(In_Test ${Integration_Tests})
-  set_tests_properties(${In_Test} PROPERTIES LABELS "IntegrationTests")
+  set_tests_properties(
+    ${In_Test} 
+    PROPERTIES 
+      LABELS "IntegrationTests"
+      TIMEOUT 2
+  )
 endforeach()

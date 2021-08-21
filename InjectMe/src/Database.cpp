@@ -54,12 +54,7 @@ namespace mf
     }
 
     Database::~Database() {
-      for (const auto& pair : mapTypesToData) {
-        const auto& allocatedValue = pair.second.value;
-        if (allocatedValue != nullptr) {
-          pair.second.deleterFct(allocatedValue);
-        }
-      }
+      reset(true);
     }
   }  // namespace InjectMe
 }  // namespace mf

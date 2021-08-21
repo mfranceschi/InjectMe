@@ -3,6 +3,7 @@
 #include <functional>
 #include <memory>
 #include <stdexcept>
+#include <string>
 #include <type_traits>
 #include <typeinfo>
 
@@ -62,6 +63,59 @@ namespace mf
     template <typename T>
     Injected<T> inject();
 
+    namespace exceptions
+    {
+      class Exception : public std::exception {
+       public:
+        Exception(
+            const std::string& failingComponent,
+            const std::string& errorName,
+            const std::string& errorDetails);
+
+        const char* what() const noexcept override;
+
+       private:
+        std::string failingComponent;
+        std::string errorName;
+        std::string errorDetails;
+        std::string resultingString;
+      };
+
+      class InvalidPointer : public Exception {
+       public:
+        InvalidPointer(const std::string& failingComponent, const std::string& errorDetails = "");
+      };
+
+      class MissingProvider : public Exception {
+       public:
+        MissingProvider(const std::string& failingComponent, const char* typeName);
+      };
+
+      class DuplicateProvider : public Exception {
+       public:
+        DuplicateProvider(const std::string& failingComponent, const char* typeName);
+      };
+
+      class ProviderRecursion : public Exception {};
+    }  // namespace exceptions
+
+    using Exc = exceptions::Exception;
+
+    namespace advanced
+    {
+      /**
+       * Calls all Provider functions so that all instances are ready for all types.
+       */
+      void callAllProviders();
+
+      /**
+       * WARNING: ADVANCED USERS ONLY.
+       * Forgets all types and providers configured and deletes all objects.
+       * All Injected<T> pointers are invalidated (they point to freed memory).
+       */
+      void reset();
+    }  // namespace advanced
+
     // ----- IMPLEMENTATIONS and INTERNAL FUNCTIONS ----- //
     namespace internals
     {
@@ -74,13 +128,6 @@ namespace mf
       }
 
       Injected<void> injectForTypeOrThrow(const std::type_info&);
-
-      /**
-       * WARNING: ADVANCED USERS ONLY.
-       * Forgets all types and providers configured and deletes all objects.
-       * All Injected<T> pointers are invalidated (they point to freed memory).
-       */
-      void reset();
     }  // namespace internals
 
     template <typename T>

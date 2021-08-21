@@ -5,11 +5,11 @@ namespace mf
 {
   namespace InjectMe
   {
-    namespace internals
+    namespace advanced
     {
       void reset() {
         Database::getInstance().reset(true);
       }
-    }  // namespace internals
+    }  // namespace advanced
   }    // namespace InjectMe
 }  // namespace mf
