@@ -39,19 +39,9 @@ class C {
 
 void configureInjector() {
   auto configPtr = Config::getInstance();
-  configPtr
-      ->add<A>([]() {
-        return new A();
-      })
-      ->add<B>([]() {
-        return new B();
-      })
-      ->add<C>([]() {
-        return new C();
-      })
-      ->add<int>([]() {
-        return new int(42);
-      });
+  configPtr->add<A>()->add<B>()->add<C>()->add<int>([]() {
+    return new int(42);
+  });
   configure(configPtr);
 }
 

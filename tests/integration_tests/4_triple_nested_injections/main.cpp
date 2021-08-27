@@ -42,16 +42,7 @@ class C {
 
 void configureInjectMe() {
   auto config = Config::getInstance();
-  config
-      ->add<A>([]() {
-        return new A;
-      })
-      ->add<B>([]() {
-        return new B;
-      })
-      ->add<C>([]() {
-        return new C;
-      });
+  config->add<A>()->add<B>()->add<C>();
   configure(config);
 }
 
