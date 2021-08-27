@@ -8,6 +8,10 @@ namespace mf
   {
     namespace exceptions
     {
+      static inline std::string errorDetailsFromTypeName(const char* typeName) {
+        return std::string("type is '") + std::string(typeName) + std::string("'.");
+      }
+
       Exception::Exception(
           const std::string& failingComponent,
           const std::string& errorName,
@@ -34,7 +38,7 @@ namespace mf
           : Exception(
                 failingComponent,
                 "missing provider for this type",
-                std::string("type is '") + std::string(typeName) + std::string("'.")) {
+                errorDetailsFromTypeName(typeName)) {
       }
 
       DuplicateProvider::DuplicateProvider(
@@ -42,7 +46,19 @@ namespace mf
           : Exception(
                 failingComponent,
                 "too many (2+) providers for this type",
-                std::string("type is '") + std::string(typeName) + std::string("'.")) {
+                errorDetailsFromTypeName(typeName)) {
+      }
+
+      ProviderRecursion::ProviderRecursion(
+          const std::string& failingComponent, const char* typeName)
+          : Exception(
+                failingComponent,
+                "recursion while calling providers",
+                errorDetailsFromTypeName(typeName)) {
+      }
+
+      Internal::Internal(const std::string& errorDetails)
+          : Exception("(internal)", "Internal error", errorDetails) {
       }
     }  // namespace exceptions
   }    // namespace InjectMe

@@ -7,6 +7,8 @@ set(PUBLIC_HEADERS
 set(PRIVATE_HEADERS
     src/ConfigImpl.hpp
     src/Database.hpp
+    src/DatabaseInstanceInsertion.hpp
+    src/TypeData.hpp
 )
 set(PRIVATE_IMPLEMENTATIONS
     src/Config.cpp
@@ -17,6 +19,7 @@ set(PRIVATE_IMPLEMENTATIONS
     src/exceptions.cpp
     src/inject.cpp
     src/reset.cpp
+    src/TypeData.cpp
 )
 
 target_sources(

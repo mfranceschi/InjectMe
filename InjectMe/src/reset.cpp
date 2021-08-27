@@ -8,7 +8,7 @@ namespace mf
     namespace advanced
     {
       void reset() {
-        Database::getInstance().reset(true);
+        Database::getDatabase().reset();
       }
     }  // namespace advanced
   }    // namespace InjectMe

@@ -96,7 +96,15 @@ namespace mf
         DuplicateProvider(const std::string& failingComponent, const char* typeName);
       };
 
-      class ProviderRecursion : public Exception {};
+      class ProviderRecursion : public Exception {
+       public:
+        ProviderRecursion(const std::string& failingComponent, const char* typeName);
+      };
+
+      class Internal : public Exception {
+       public:
+        Internal(const std::string& errorDetails);
+      };
     }  // namespace exceptions
 
     using Exc = exceptions::Exception;

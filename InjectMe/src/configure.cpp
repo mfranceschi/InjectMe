@@ -21,7 +21,7 @@ namespace mf
         throw std::logic_error("InjectMe::configure - no provider has been set");
       }
 
-      Database& database = Database::getInstance();
+      Database& database = Database::getDatabase();
       for (const auto& pair : mapTypesToProvidersAndDeleters) {
         const auto& typeIndex = pair.first;
 
