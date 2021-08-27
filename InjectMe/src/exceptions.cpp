@@ -8,7 +8,7 @@ namespace mf
   {
     namespace exceptions
     {
-      static inline std::string errorDetailsFromTypeName(const char* typeName) {
+      static inline std::string _makeErrorDetailsFromTypeName(const char* typeName) {
         return std::string("type is '") + std::string(typeName) + std::string("'.");
       }
 
@@ -38,7 +38,7 @@ namespace mf
           : Exception(
                 failingComponent,
                 "missing provider for this type",
-                errorDetailsFromTypeName(typeName)) {
+                _makeErrorDetailsFromTypeName(typeName)) {
       }
 
       DuplicateProvider::DuplicateProvider(
@@ -46,7 +46,7 @@ namespace mf
           : Exception(
                 failingComponent,
                 "too many (2+) providers for this type",
-                errorDetailsFromTypeName(typeName)) {
+                _makeErrorDetailsFromTypeName(typeName)) {
       }
 
       ProviderRecursion::ProviderRecursion(
@@ -54,7 +54,7 @@ namespace mf
           : Exception(
                 failingComponent,
                 "recursion while calling providers",
-                errorDetailsFromTypeName(typeName)) {
+                _makeErrorDetailsFromTypeName(typeName)) {
       }
 
       Internal::Internal(const std::string& errorDetails)

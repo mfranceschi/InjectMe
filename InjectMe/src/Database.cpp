@@ -12,8 +12,12 @@ namespace mf
     }
 
     Injected<void> Database::getForType(const std::type_index& typeIndex) {
-      TypeData& typeData = mapTypesToData.at(typeIndex);  // throws out_of_range
-      return typeData.getInstanceAndMakeIfNeeded();
+      try {
+        TypeData& typeData = mapTypesToData.at(typeIndex);  // throws out_of_range
+        return typeData.getValueAndMakeIfNeeded();
+      } catch (const std::out_of_range&) {
+        throw exceptions::MissingProvider("inject", typeIndex.name());
+      }
     }
 
     bool Database::knowsType(const std::type_index& typeIndex) const {

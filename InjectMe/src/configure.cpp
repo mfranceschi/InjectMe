@@ -8,7 +8,7 @@ namespace mf
   {
     void configure(const Config::ConfigPtr& configPtr) {
       if (!configPtr) {
-        throw std::invalid_argument("InjectMe::configure - configPtr is a null pointer");
+        throw exceptions::InvalidPointer("configure", "configPtr is null");
       }
 
       const auto* configImplPtr = dynamic_cast<const ConfigImpl*>(configPtr.get());

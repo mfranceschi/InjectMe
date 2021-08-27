@@ -39,7 +39,7 @@ TEST_F(ConfigAddIntType, itCanAdd) {
 
 TEST_F(ConfigAddIntType, itThrowsOnDuplicate) {
   config->add<int>(intTypeProvider);
-  ASSERT_THROW(config->add<int>(intTypeProvider), std::logic_error);
+  ASSERT_THROW(config->add<int>(intTypeProvider), mf::InjectMe::exceptions::DuplicateProvider);
 }
 
 TEST_F(ConfigAddIntType, itReturnsThisOnAdd) {

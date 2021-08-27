@@ -12,11 +12,10 @@ namespace mf
   {
     class TypeData {
      public:
-      void* getInstanceAndMakeIfNeeded();
+      void* getValueAndMakeIfNeeded();
       void provideValue();
 
       const std::type_index& getTypeIndex() const;
-      const Injected<void>& getValue() const;
 
       TypeData(
           const std::type_index& typeIndex,

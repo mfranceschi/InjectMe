@@ -11,7 +11,7 @@ namespace mf
 {
   namespace InjectMe
   {
-    void* TypeData::getInstanceAndMakeIfNeeded() {
+    void* TypeData::getValueAndMakeIfNeeded() {
       if (!value) {
         provideValue();
       }
@@ -20,10 +20,6 @@ namespace mf
 
     const std::type_index& TypeData::getTypeIndex() const {
       return typeIndex;
-    }
-
-    const Injected<void>& TypeData::getValue() const {
-      return value;
     }
 
     TypeData::TypeData(

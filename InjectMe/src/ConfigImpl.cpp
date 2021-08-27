@@ -29,11 +29,7 @@ namespace mf
     }
 
     void ConfigImpl::throwErrorForDuplicate(const std::type_index& typeIndex) {
-      std::ostringstream oss;
-      oss << "InjectMe::Config - Unable to add once again a provider for the type '"
-          << typeIndex.name() << "'.";
-      throw std::logic_error(oss.str());
+      throw exceptions::DuplicateProvider("Config", typeIndex.name());
     }
-
   }  // namespace InjectMe
 }  // namespace mf

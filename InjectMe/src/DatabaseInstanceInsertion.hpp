@@ -12,7 +12,6 @@ namespace mf
   {
     class DatabaseInstanceInsertion {
      public:
-      DatabaseInstanceInsertion() = delete;
       DatabaseInstanceInsertion(const std::type_index& typeIndex) : typeIndex(typeIndex) {
         auto& theSet = Database::getDatabase().typesInConstruction;
         auto insertResult = theSet.insert(typeIndex);
@@ -20,9 +19,12 @@ namespace mf
           throw exceptions::ProviderRecursion("Instance generation", typeIndex.name());
         }
       }
+
       ~DatabaseInstanceInsertion() {
         Database::getDatabase().typesInConstruction.erase(typeIndex);
       }
+
+      DatabaseInstanceInsertion() = delete;
 
      private:
       std::type_index typeIndex;
