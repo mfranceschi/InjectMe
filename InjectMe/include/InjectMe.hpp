@@ -53,15 +53,37 @@ namespace mf
      */
     void configure(const Config::ConfigPtr&);
 
-    template <typename T>
-    using Injected = T*;
-
     /**
-     * @returns an Injected instance for the given type (create if never queried before).
+     * @returns a pointer to an instance of the given type (create if never queried before).
      * @throws std::logic_error if no Provider is known for that type.
      */
     template <typename T>
-    Injected<T> inject();
+    T* inject();
+
+    template <typename T>
+    class Injected {
+     public:
+      Injected<T>() : pointer(inject<T>()) {
+      }
+      Injected(const Injected<T>&) = default;
+      Injected(Injected<T>&&) = default;
+      Injected<T>& operator=(const Injected<T>&) = default;
+      Injected<T>& operator=(Injected<T>&&) = default;
+      ~Injected() = default;
+
+      T* get() {
+        return pointer;
+      }
+      T& operator*() {
+        return *pointer;
+      }
+      T* operator->() {
+        return pointer;
+      }
+
+     private:
+      T* const pointer;
+    };
 
     namespace exceptions
     {
@@ -135,7 +157,7 @@ namespace mf
         };
       }
 
-      Injected<void> injectForTypeOrThrow(const std::type_info&);
+      void* injectForTypeOrThrow(const std::type_info&);
     }  // namespace internals
 
     template <typename T>
@@ -149,7 +171,7 @@ namespace mf
     }
 
     template <typename T>
-    Injected<T> inject() {
+    T* inject() {
       return static_cast<T*>(internals::injectForTypeOrThrow(typeid(T)));
     }
 

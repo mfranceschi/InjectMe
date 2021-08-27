@@ -15,7 +15,7 @@ namespace mf
      public:
       static Database& getDatabase();
 
-      Injected<void> getForType(const std::type_index& typeIndex);
+      void* getForType(const std::type_index& typeIndex);
 
       bool knowsType(const std::type_index& typeIndex) const;
 

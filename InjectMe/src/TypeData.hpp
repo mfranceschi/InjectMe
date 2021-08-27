@@ -35,7 +35,7 @@ namespace mf
       std::type_index typeIndex;
       ProviderFct<void> providerFct = nullptr;
       Deleter deleterFct = nullptr;
-      Injected<void> value = nullptr;
+      void* value = nullptr;
     };
   }  // namespace InjectMe
 }  // namespace mf

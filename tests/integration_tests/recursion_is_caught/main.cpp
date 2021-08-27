@@ -13,8 +13,8 @@ class A {
   ~A() = default;
 
  private:
-  Injected<int> theInt = inject<int>();
-  Injected<B> theB = inject<B>();
+  Injected<int> theInt;
+  Injected<B> theB;
 };
 
 class B {
@@ -24,7 +24,7 @@ class B {
   ~B() = default;
 
  private:
-  Injected<A> theA = inject<A>();
+  Injected<A> theA;
 };
 
 class C {
@@ -34,7 +34,7 @@ class C {
   ~C() = default;
 
  private:
-  Injected<C> theC = inject<C>();
+  Injected<C> theC;
 };
 
 void configureInjector() {

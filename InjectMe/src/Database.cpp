@@ -11,7 +11,7 @@ namespace mf
       return singleton;
     }
 
-    Injected<void> Database::getForType(const std::type_index& typeIndex) {
+    void* Database::getForType(const std::type_index& typeIndex) {
       try {
         TypeData& typeData = mapTypesToData.at(typeIndex);  // throws out_of_range
         return typeData.getValueAndMakeIfNeeded();
