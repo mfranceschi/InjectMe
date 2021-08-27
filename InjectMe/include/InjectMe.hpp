@@ -14,7 +14,21 @@ namespace mf
     template <typename T>
     using ProviderFct = std::function<T*(void)>;
 
+    template <typename T>
+    using DeleterFct = std::function<void(T*)>;
+
     using Deleter = std::function<void(void*)>;
+
+    namespace internals
+    {
+      template <typename T>
+      Deleter makeDefaultDeleter();
+
+      template <typename T>
+      ProviderFct<T> makeDefaultProvider();
+
+      void* injectForTypeOrThrow(const std::type_info&);
+    }  // namespace internals
 
     class Config {
      public:
@@ -32,7 +46,9 @@ namespace mf
        * @throws std::logic_error if a provider function is already registered for the given type.
        */
       template <typename T>
-      Config* add(const ProviderFct<T>& provider);
+      Config* add(
+          const ProviderFct<T>& provider = internals::makeDefaultProvider<T>(),
+          const DeleterFct<T>& deleter = internals::makeDefaultDeleter<T>());
 
       explicit Config(const Config&) = delete;
       explicit Config(const Config&&) = delete;
@@ -66,9 +82,9 @@ namespace mf
       Injected<T>() : pointer(inject<T>()) {
       }
       Injected(const Injected<T>&) = default;
-      Injected(Injected<T>&&) = default;
+      Injected(Injected<T>&&) noexcept = default;
       Injected<T>& operator=(const Injected<T>&) = default;
-      Injected<T>& operator=(Injected<T>&&) = default;
+      Injected<T>& operator=(Injected<T>&&) noexcept = default;
       ~Injected() = default;
 
       T* get() {
@@ -150,10 +166,17 @@ namespace mf
     namespace internals
     {
       template <typename T>
-      Deleter makeDeleter() {
+      Deleter makeDefaultDeleter() {
         return [](void* pointerToDelete) {
           T* castedPointer = static_cast<T*>(pointerToDelete);
           std::default_delete<T>()(castedPointer);
+        };
+      }
+
+      template <typename T>
+      ProviderFct<T> makeDefaultProvider() {
+        return []() -> T* {
+          return new T;
         };
       }
 
@@ -161,12 +184,15 @@ namespace mf
     }  // namespace internals
 
     template <typename T>
-    Config* Config::add(const ProviderFct<T>& provider) {
+    Config* Config::add(const ProviderFct<T>& provider, const DeleterFct<T>& deleter) {
       static_assert(!std::is_array<T>::value, "Array types are not allowed.");
       const std::type_info& typeInfo = typeid(T);
       ProviderFct<void> castedProvider = provider;
+      Deleter castedDeleter = [deleter](void* pointer) {
+        deleter(static_cast<T*>(pointer));
+      };
 
-      this->setProviderForTypeOrThrow(castedProvider, typeInfo, internals::makeDeleter<T>());
+      this->setProviderForTypeOrThrow(castedProvider, typeInfo, castedDeleter);
       return this;
     }
 

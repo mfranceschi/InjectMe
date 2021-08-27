@@ -1,5 +1,0 @@
-
-add_executable(triple_nested_injections)
-target_link_libraries(triple_nested_injections PUBLIC MF_InjectMe)
-
-target_sources(triple_nested_injections PRIVATE main.cpp)

@@ -1,11 +1,11 @@
 
 set(Integration_Tests_Folders
-  configure_and_exit_0
-  configure_complex_type_0
-  configure_single_type_0
-  dummy_function_0
-  recursion_is_caught
-  triple_nested_injections
+  0_dummy_function
+  1_configure_and_exit
+  2_configure_single_type
+  3_configure_complex_type
+  4_triple_nested_injections
+  5_recursion_is_caught
 )
 
 find_program(
