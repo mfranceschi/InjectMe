@@ -75,4 +75,4 @@ jobs:
         run: find ./InjectMe/ -name "*.cpp" -o -name "*.hpp" | xargs clang-tidy -p=${{ env.BUILD_DIR }} --header-filter='^\.\/InjectMe/.*\.hpp$'
 
       - name: CHECK - CMakeLint
-        run: find ./InjectMe/ ./tests/ -name "CMakeLists.txt" | xargs cmakelint --spaces=2
+        run: find ./InjectMe/ ./tests/ -name "CMakeLists.txt" | xargs cmakelint --spaces=2 --linelength=100
