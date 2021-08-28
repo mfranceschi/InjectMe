@@ -60,6 +60,9 @@ jobs:
       - name: SETUP - Checkout git repo
         uses: actions/checkout@v2
 
+      - name: SETUP - Install dependencies
+        run: apt install clang-tidy
+
       - name: SETUP - CMake configure
         run: cmake -DCMAKE_BUILD_TYPE=${{ env.CMake_Config }} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -S . -B ${{ env.BUILD_DIR }}
 
