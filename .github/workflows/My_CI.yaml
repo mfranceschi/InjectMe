@@ -29,7 +29,7 @@ jobs:
 
       - name: BUILD - CMake configure
         run: |
-          cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -Wdev -Werror=dev -S . -B ${{ env.BUILD_DIR }}
+          cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -S . -B ${{ env.BUILD_DIR }}
 
       - name: BUILD - CMake build
         run: |
@@ -61,13 +61,18 @@ jobs:
         uses: actions/checkout@v2
 
       - name: SETUP - Install dependencies
-        run: sudo apt-get install clang-tidy
+        run: |
+          sudo apt-get install clang-tidy
+          pip install cmakelint
 
       - name: SETUP - CMake configure
-        run: cmake -DCMAKE_BUILD_TYPE=${{ env.CMake_Config }} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -S . -B ${{ env.BUILD_DIR }}
+        run: cmake -DCMAKE_BUILD_TYPE=${{ env.CMake_Config }} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Werror=dev -Werror=deprecated -S . -B ${{ env.BUILD_DIR }}
 
       - name: CHECK - Clang-Format (formatting)
         run: bash ./.github/helpers/clang-format-all .
 
-      - name: CHECK - Clang-Tidy (static analysis)
+      - name: CHECK - Clang-Tidy (static analysis, NOT on tests)
         run: find ./InjectMe/ -name "*.cpp" -o -name "*.hpp" | xargs clang-tidy -p=${{ env.BUILD_DIR }} --header-filter='^\.\/InjectMe/.*\.hpp$'
+
+      - name: CHECK - CMakeLint
+        run: find ./InjectMe/ ./tests/ -name "CMakeLists.txt" | xargs cmakelint --spaces=2
