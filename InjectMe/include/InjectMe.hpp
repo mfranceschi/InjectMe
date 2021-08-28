@@ -81,6 +81,8 @@ namespace mf
      public:
       Injected<T>() : pointer(inject<T>()) {
       }
+      Injected<T>(T* pointer) : pointer(pointer) {
+      }
       Injected(const Injected<T>&) = default;
       Injected(Injected<T>&&) noexcept = default;
       Injected<T>& operator=(const Injected<T>&) = default;
@@ -94,6 +96,9 @@ namespace mf
         return *pointer;
       }
       T* operator->() {
+        return pointer;
+      }
+      operator T*() {
         return pointer;
       }
 
@@ -179,8 +184,6 @@ namespace mf
           return new T;
         };
       }
-
-      void* injectForTypeOrThrow(const std::type_info&);
     }  // namespace internals
 
     template <typename T>

@@ -51,16 +51,20 @@ jobs:
     env:
         BUILD_DIR: ./build/
         CLANG_VERSION: 10
-        CMake_Config: Release
+        CMake_Config: Debug
+
+        CC: /usr/bin/clang
+        CXX: /usr/bin/clang++
 
     steps:
       - name: SETUP - Checkout git repo
         uses: actions/checkout@v2
 
-      - name: CHECK - Clang-Format
+      - name: SETUP - CMake configure
+        run: cmake -DCMAKE_BUILD_TYPE=${{ env.CMake_Config }} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -S . -B ${{ env.BUILD_DIR }}
+
+      - name: CHECK - Clang-Format (formatting)
         run: bash ./.github/helpers/clang-format-all .
 
-      - name: CHECK - Clang-Tidy (v11, not v10)
-        uses: HorstBaerbel/action-clang-tidy@1.2
-        with:
-          excludedirs: 'tests/'
+      - name: CHECK - Clang-Tidy (static analysis)
+        run: find ./InjectMe/ -name "*.cpp" -o -name "*.hpp" | xargs clang-tidy -p=${{ env.BUILD_DIR }} --header-filter='^\.\/InjectMe/.*\.hpp$'

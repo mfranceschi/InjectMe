@@ -14,7 +14,7 @@ add_executable(
     dummy_function_tests.cpp
     tests_main.cpp
 )
-target_link_libraries(InjectMe_GoogleTests gtest_main gmock MF_InjectMe)
+target_link_libraries(InjectMe_GoogleTests PUBLIC gtest_main gmock MF_InjectMe)
 
 include(GoogleTest)
 gtest_discover_tests(

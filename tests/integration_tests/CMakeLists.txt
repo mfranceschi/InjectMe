@@ -40,6 +40,6 @@ foreach(In_Test ${Integration_Tests})
     ${In_Test} 
     PROPERTIES 
       LABELS "IntegrationTests"
-      TIMEOUT 2
+      TIMEOUT 5
   )
 endforeach()
