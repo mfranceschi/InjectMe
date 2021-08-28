@@ -8,7 +8,7 @@ namespace mf
   {
     void configure(const Config::ConfigPtr& configPtr) {
       if (!configPtr) {
-        throw std::invalid_argument("InjectMe::configure - configPtr is a null pointer");
+        throw exceptions::InvalidPointer("configure", "configPtr is null");
       }
 
       const auto* configImplPtr = dynamic_cast<const ConfigImpl*>(configPtr.get());
@@ -21,7 +21,7 @@ namespace mf
         throw std::logic_error("InjectMe::configure - no provider has been set");
       }
 
-      Database& database = Database::getInstance();
+      Database& database = Database::getDatabase();
       for (const auto& pair : mapTypesToProvidersAndDeleters) {
         const auto& typeIndex = pair.first;
 

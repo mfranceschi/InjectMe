@@ -1,27 +1,21 @@
 #pragma once
 
 #include <map>
+#include <set>
 #include <typeindex>
 
 #include "InjectMe.hpp"
+#include "TypeData.hpp"
 
 namespace mf
 {
   namespace InjectMe
   {
-    struct TypeData {
-      ProviderFct<void> providerFct = nullptr;
-      Deleter deleterFct = nullptr;
-      Injected<void> value = nullptr;
-    };
-
     class Database {
      public:
-      static Database& getInstance();
+      static Database& getDatabase();
 
-      Injected<void> getForType(const std::type_index& typeIndex);
-
-      static void makeInstanceForType(TypeData& typeData);
+      void* getForType(const std::type_index& typeIndex);
 
       bool knowsType(const std::type_index& typeIndex) const;
 
@@ -30,7 +24,7 @@ namespace mf
           const ProviderFct<void>& providerFunction,
           const Deleter& deleterFunction);
 
-      void reset(bool deletePointers = true);
+      void reset();
 
       ~Database();
       Database(const Database&) = delete;
@@ -38,11 +32,13 @@ namespace mf
       Database(Database&&) = delete;
       Database& operator=(Database&&) = delete;
 
+      friend class DatabaseInstanceInsertion;
+
      private:
       Database() = default;
-      void deletePointers();
 
       std::map<std::type_index, TypeData> mapTypesToData{};
+      std::set<std::type_index> typesInConstruction{};
     };
   }  // namespace InjectMe
 }  // namespace mf

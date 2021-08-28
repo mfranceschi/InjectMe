@@ -17,7 +17,7 @@ class A {
   }
 
  private:
-  Injected<B> b = inject<B>();
+  Injected<B> b{};
 };
 
 class B {
@@ -30,7 +30,7 @@ class B {
   }
 
  private:
-  Injected<C> c = inject<C>();
+  Injected<C> c{};
 };
 
 class C {
@@ -42,26 +42,17 @@ class C {
 
 void configureInjectMe() {
   auto config = Config::getInstance();
-  config
-      ->add<A>([]() {
-        return new A;
-      })
-      ->add<B>([]() {
-        return new B;
-      })
-      ->add<C>([]() {
-        return new C;
-      });
+  config->add<A>()->add<B>()->add<C>();
   configure(config);
 }
 
 void runChecks() {
   auto a = inject<A>();
   auto b = inject<B>();
-  myAssert(a->getB() == b, "Pointers have unexpected value");
+  myAssert(a->getB().get() == b, "Pointers have unexpected value");
   auto c = inject<C>();
-  myAssert(b->getC() == c, "Pointers have unexpected value");
-  myAssert(a->getB()->getC() == c, "Pointers have unexpected value");
+  myAssert(b->getC().get() == c, "Pointers have unexpected value");
+  myAssert(a->getB()->getC().get() == c, "Pointers have unexpected value");
 }
 
 int main() {

@@ -1,17 +1,18 @@
 
 set(Integration_Tests_Folders
-  configure_and_exit_0
-  configure_complex_type_0
-  configure_single_type_0
-  dummy_function_0
-  triple_nested_injections
+  0_dummy_function
+  1_configure_and_exit
+  2_configure_single_type
+  3_configure_complex_type
+  4_triple_nested_injections
+  5_recursion_is_caught
 )
 
 find_program(
-  VALGRIND_PROGRAM 
+  VALGRIND_PROGRAM
   NAMES valgrind
 )
-set(VALGRIND_OPTIONS --leak-check=full --show-leak-kinds=all --error-exitcode=44 )
+set(VALGRIND_OPTIONS --leak-check=full --show-leak-kinds=all --error-exitcode=44)
 
 foreach(Integration_Test_Folder ${Integration_Tests_Folders})
   add_subdirectory(${Integration_Test_Folder})
@@ -26,8 +27,8 @@ foreach(Integration_Test_Folder ${Integration_Tests_Folders})
       COMMAND valgrind ${VALGRIND_OPTIONS} $<TARGET_FILE:${Integration_Test_Folder}>
     )
     set_tests_properties(
-        "Integration_Test_${Integration_Test_Folder}_Memcheck_Valgrind" 
-        PROPERTIES 
+        "Integration_Test_${Integration_Test_Folder}_Memcheck_Valgrind"
+        PROPERTIES
           DEPENDS "Integration_Test_${Integration_Test_Folder}"
     )
   endif()
@@ -35,5 +36,10 @@ endforeach()
 
 get_property(Integration_Tests DIRECTORY . PROPERTY TESTS)
 foreach(In_Test ${Integration_Tests})
-  set_tests_properties(${In_Test} PROPERTIES LABELS "IntegrationTests")
+  set_tests_properties(
+    ${In_Test}
+    PROPERTIES
+      LABELS "IntegrationTests"
+      TIMEOUT 5
+  )
 endforeach()

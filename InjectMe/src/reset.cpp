@@ -1,15 +1,14 @@
 #include "Database.hpp"
-#include "InjectMe.hpp"
 
 namespace mf
 {
   namespace InjectMe
   {
-    namespace internals
+    namespace advanced
     {
       void reset() {
-        Database::getInstance().reset(true);
+        Database::getDatabase().reset();
       }
-    }  // namespace internals
+    }  // namespace advanced
   }    // namespace InjectMe
 }  // namespace mf
