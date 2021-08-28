@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: SETUP - Install dependencies
-        run: apt install clang-tidy
+        run: sudo apt-get install clang-tidy
 
       - name: SETUP - CMake configure
         run: cmake -DCMAKE_BUILD_TYPE=${{ env.CMake_Config }} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -S . -B ${{ env.BUILD_DIR }}
