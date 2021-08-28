@@ -76,3 +76,14 @@ jobs:
 
       - name: CHECK - CMakeLint
         run: find ./InjectMe/ ./tests/ -name "CMakeLists.txt" | xargs cmakelint --spaces=2 --linelength=100
+
+  misc-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Git repo
+        uses: actions/checkout@v2
+
+      - name: CHECKS - Ensure no iostream
+        run: "! grep -Rl 'iostream' --include=*.py"
+        working-directory: ./InjectMe/
