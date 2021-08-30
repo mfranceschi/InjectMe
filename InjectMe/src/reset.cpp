@@ -10,5 +10,5 @@ namespace mf
         Database::getDatabase().reset();
       }
     }  // namespace advanced
-  }    // namespace InjectMe
+  }  // namespace InjectMe
 }  // namespace mf

@@ -11,9 +11,9 @@ namespace mf
       return singleton;
     }
 
-    void* Database::getForType(const std::type_index& typeIndex) {
+    void* Database::getForType(const std::type_index& typeIndex) const {
       try {
-        TypeDataPtr& typeData = mapTypesToData.at(typeIndex);  // throws out_of_range
+        const TypeDataPtr& typeData = mapTypesToData.at(typeIndex);  // throws out_of_range
         return typeData->getValueAndMakeIfNeeded();
       } catch (const std::out_of_range&) {
         throw exceptions::MissingProvider("inject", typeIndex.name());
@@ -22,16 +22,6 @@ namespace mf
 
     bool Database::knowsType(const std::type_index& typeIndex) const {
       return mapTypesToData.find(typeIndex) != mapTypesToData.cend();
-    }
-
-    void Database::configureForType(
-        const std::type_index& typeIndex,
-        const ProviderFct<void>& providerFunction,
-        const Deleter& deleterFunction) {
-      /*
-  TypeData typeData(typeIndex, providerFunction, deleterFunction);
-  mapTypesToData.insert(std::make_pair(typeIndex, typeData));
-  */
     }
 
     void Database::configure2(const TypeDataPtr& typeData) {

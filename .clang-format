@@ -16,3 +16,5 @@ AllowShortLambdasOnASingleLine: None
 
 AlignAfterOpenBracket: AlwaysBreak
 BinPackParameters: false
+
+AlignTrailingComments: false
