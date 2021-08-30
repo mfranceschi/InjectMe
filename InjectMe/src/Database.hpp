@@ -1,7 +1,6 @@
 #pragma once
 
 #include <map>
-#include <set>
 #include <typeindex>
 
 #include "InjectMe.hpp"
@@ -15,14 +14,9 @@ namespace mf
      public:
       static Database& getDatabase();
 
-      void* getForType(const std::type_index& typeIndex);
-
+      void* getForType(const std::type_index& typeIndex) const;
       bool knowsType(const std::type_index& typeIndex) const;
-
-      void configureForType(
-          const std::type_index& typeIndex,
-          const ProviderFct<void>& providerFunction,
-          const Deleter& deleterFunction);
+      void configure2(const TypeDataPtr& typeData);
 
       void reset();
 
@@ -37,8 +31,7 @@ namespace mf
      private:
       Database() = default;
 
-      std::map<std::type_index, TypeData> mapTypesToData{};
-      std::set<std::type_index> typesInConstruction{};
+      std::map<std::type_index, TypeDataPtr> mapTypesToData{};
     };
   }  // namespace InjectMe
 }  // namespace mf

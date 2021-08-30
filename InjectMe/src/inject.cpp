@@ -10,5 +10,5 @@ namespace mf
         return Database::getDatabase().getForType(std::type_index(typeInfo));
       }
     }  // namespace internals
-  }    // namespace InjectMe
+  }  // namespace InjectMe
 }  // namespace mf

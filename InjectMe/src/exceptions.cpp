@@ -61,5 +61,5 @@ namespace mf
           : Exception("(internal)", "Internal error", errorDetails) {
       }
     }  // namespace exceptions
-  }    // namespace InjectMe
+  }  // namespace InjectMe
 }  // namespace mf

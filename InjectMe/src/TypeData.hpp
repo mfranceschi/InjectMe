@@ -10,32 +10,62 @@ namespace mf
 {
   namespace InjectMe
   {
+    class TypeData;
+    using TypeDataPtr = std::shared_ptr<TypeData>;
+
+    /**
+     * @brief It can provide the unique instance for a class to be injected.
+     */
     class TypeData {
      public:
-      void* getValueAndMakeIfNeeded();
-      void provideValue();
-
+      virtual void* getValueAndMakeIfNeeded() = 0;
       const std::type_index& getTypeIndex() const;
+      bool hasValue() const;
 
-      TypeData(
+      static TypeDataPtr makeWithProvider(
           const std::type_index& typeIndex,
-          const ProviderFct<void>& proiderFct,
+          const ProviderFct<void>& providerFct,
           const Deleter& deleterFct);
 
-      ~TypeData();
+      static TypeDataPtr makeWithValue(
+          const std::type_index& typeIndex, void* value, const Deleter& deleter);
 
-      TypeData(const TypeData&) = default;
-      TypeData& operator=(const TypeData&) = default;
+      virtual ~TypeData() = default;
 
       TypeData() = delete;
+      TypeData(const TypeData&) = delete;
+      TypeData& operator=(const TypeData&) = delete;
       TypeData(TypeData&&) = delete;
       TypeData& operator=(TypeData&&) = delete;
 
+     protected:
+      TypeData(const std::type_index& typeIndex, const Deleter& deleterFct);
+      void* getValue() const;
+      void resetValue(void* newValue);
+
      private:
       std::type_index typeIndex;
+      std::unique_ptr<void, Deleter> uniquePtr;
+    };
+
+    class TypeDataWithProvider : public TypeData {
+     public:
+      TypeDataWithProvider(
+          const std::type_index& typeIndex,
+          const ProviderFct<void>& providerFct,
+          const Deleter& deleterFct);
+
+      void* getValueAndMakeIfNeeded() override;
+
+     private:
       ProviderFct<void> providerFct = nullptr;
-      Deleter deleterFct = nullptr;
-      void* value = nullptr;
+    };
+
+    class TypeDataWithValue : public TypeData {
+     public:
+      TypeDataWithValue(const std::type_index& typeIndex, void* value, const Deleter& deleterFct);
+
+      void* getValueAndMakeIfNeeded() override;
     };
   }  // namespace InjectMe
 }  // namespace mf

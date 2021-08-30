@@ -1,5 +1,6 @@
 #include "TypeData.hpp"
 
+#include <ciso646>  // Windows seems to require it, even though cppreference says it's built-in
 #include <map>
 #include <set>
 #include <typeindex>
@@ -11,33 +12,63 @@ namespace mf
 {
   namespace InjectMe
   {
-    void* TypeData::getValueAndMakeIfNeeded() {
-      if (!value) {
-        provideValue();
-      }
-      return value;
-    }
-
     const std::type_index& TypeData::getTypeIndex() const {
       return typeIndex;
     }
 
-    TypeData::TypeData(
+    TypeData::TypeData(const std::type_index& typeIndex, const Deleter& deleterFct)
+        : typeIndex(typeIndex), uniquePtr(nullptr, deleterFct) {
+    }
+
+    TypeDataPtr TypeData::makeWithProvider(
+        const std::type_index& typeIndex,
+        const ProviderFct<void>& providerFct,
+        const Deleter& deleterFct) {
+      // Note: we cannot use sd::make_shared because the constructors are private.
+      return TypeDataPtr(new TypeDataWithProvider(typeIndex, providerFct, deleterFct));
+    }
+
+    TypeDataPtr TypeData::makeWithValue(
+        const std::type_index& typeIndex, void* value, const Deleter& deleterFct) {
+      // Note: we cannot use sd::make_shared because the constructors are private.
+      return TypeDataPtr(new TypeDataWithValue(typeIndex, value, deleterFct));
+    }
+
+    bool TypeData::hasValue() const {
+      return bool(uniquePtr);
+    }
+
+    void* TypeData::getValue() const {
+      return uniquePtr.get();
+    }
+
+    void TypeData::resetValue(void* newValue) {
+      uniquePtr.reset(newValue);
+    }
+
+    TypeDataWithProvider::TypeDataWithProvider(
         const std::type_index& typeIndex,
         const ProviderFct<void>& providerFct,
         const Deleter& deleterFct)
-        : typeIndex(typeIndex), providerFct(providerFct), deleterFct(deleterFct) {
+        : TypeData(typeIndex, deleterFct), providerFct(providerFct) {
     }
 
-    TypeData::~TypeData() {
-      if (value != nullptr) {
-        deleterFct(value);
+    void* TypeDataWithProvider::getValueAndMakeIfNeeded() {
+      if (not hasValue()) {
+        DatabaseInstanceInsertion dii(getTypeIndex());
+        resetValue(providerFct());
       }
+      return getValue();
     }
 
-    void TypeData::provideValue() {
-      DatabaseInstanceInsertion dii(getTypeIndex());
-      value = providerFct();
+    TypeDataWithValue::TypeDataWithValue(
+        const std::type_index& typeIndex, void* value, const Deleter& deleterFct)
+        : TypeData(typeIndex, deleterFct) {
+      resetValue(value);
+    }
+
+    void* TypeDataWithValue::getValueAndMakeIfNeeded() {
+      return getValue();
     }
   }  // namespace InjectMe
 }  // namespace mf

@@ -1,6 +1,7 @@
 #include "ConfigImpl.hpp"
 #include "Database.hpp"
 #include "InjectMe.hpp"
+#include "TypeData.hpp"
 
 namespace mf
 {
@@ -13,20 +14,17 @@ namespace mf
 
       const auto* configImplPtr = dynamic_cast<const ConfigImpl*>(configPtr.get());
       if (configImplPtr == nullptr) {
-        throw std::invalid_argument("InjectMe::configure - internal type error");
+        throw exceptions::Internal("internal type error (not ConfigImpl)");
       }
 
       const auto& mapTypesToProvidersAndDeleters = configImplPtr->mapTypesToProvidersAndDeleters;
-      if (mapTypesToProvidersAndDeleters.empty()) {
-        throw std::logic_error("InjectMe::configure - no provider has been set");
-      }
 
       Database& database = Database::getDatabase();
       for (const auto& pair : mapTypesToProvidersAndDeleters) {
         const auto& typeIndex = pair.first;
 
         if (database.knowsType(typeIndex)) {
-          throw std::logic_error("InjectMe::configure - duplicate entry for some type");
+          throw exceptions::DuplicateProvider("configure", typeIndex.name());
         }
       }
 
@@ -34,8 +32,8 @@ namespace mf
         const auto& typeIndex = pair.first;
         const auto& providerFunction = pair.second.first;
         const auto& deleterFunction = pair.second.second;
-
-        database.configureForType(typeIndex, providerFunction, deleterFunction);
+        auto typeData = TypeData::makeWithProvider(typeIndex, providerFunction, deleterFunction);
+        database.configure2(typeData);
       }
     }
   }  // namespace InjectMe

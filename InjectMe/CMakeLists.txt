@@ -15,6 +15,7 @@ set(PRIVATE_IMPLEMENTATIONS
     src/ConfigImpl.cpp
     src/configure.cpp
     src/Database.cpp
+    src/DatabaseInstanceInsertion.cpp
     src/dummy_function.cpp
     src/exceptions.cpp
     src/inject.cpp
