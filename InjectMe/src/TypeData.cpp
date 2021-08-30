@@ -16,16 +16,10 @@ namespace mf
     }
 
     TypeData::TypeData(const std::type_index& typeIndex, const Deleter& deleterFct)
-        : typeIndex(typeIndex), deleterFct(deleterFct) {
+        : typeIndex(typeIndex), uniquePtr(nullptr, deleterFct) {
     }
 
-    TypeData::~TypeData() {
-      if (value != nullptr) {
-        deleterFct(value);
-      }
-    }
-
-    TypeDataPtr TypeData::make(
+    TypeDataPtr TypeData::makeWithProvider(
         const std::type_index& typeIndex,
         const ProviderFct<void>& providerFct,
         const Deleter& deleterFct) {
@@ -34,8 +28,14 @@ namespace mf
           new TypeDataWithProvider(typeIndex, providerFct, deleterFct));
     }
 
+    TypeDataPtr TypeData::makeWithValue(
+        const std::type_index& typeIndex, void* value, const Deleter& deleterFct) {
+      // Note: we cannot use sd::make_shared because the constructors are private.
+      return std::shared_ptr<TypeData>(new TypeDataWithValue(typeIndex, value, deleterFct));
+    }
+
     bool TypeData::hasValue() const {
-      return value != nullptr;
+      return bool(uniquePtr);
     }
 
     TypeDataWithProvider::TypeDataWithProvider(
@@ -46,11 +46,21 @@ namespace mf
     }
 
     void* TypeDataWithProvider::getValueAndMakeIfNeeded() {
-      if (!value) {
+      if (!uniquePtr) {
         DatabaseInstanceInsertion dii(getTypeIndex());
-        value = providerFct();
+        uniquePtr.reset(providerFct());
       }
-      return value;
+      return uniquePtr.get();
+    }
+
+    TypeDataWithValue::TypeDataWithValue(
+        const std::type_index& typeIndex, void* value, const Deleter& deleterFct)
+        : TypeData(typeIndex, deleterFct) {
+      uniquePtr.reset(value);
+    }
+
+    void* TypeDataWithValue::getValueAndMakeIfNeeded() {
+      return uniquePtr.get();
     }
   }  // namespace InjectMe
 }  // namespace mf

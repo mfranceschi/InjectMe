@@ -13,18 +13,24 @@ namespace mf
     class TypeData;
     using TypeDataPtr = std::shared_ptr<TypeData>;
 
+    /**
+     * @brief It can provide the unique instance for a class to be injected.
+     */
     class TypeData {
      public:
       virtual void* getValueAndMakeIfNeeded() = 0;
       const std::type_index& getTypeIndex() const;
       bool hasValue() const;
 
-      static TypeDataPtr make(
+      static TypeDataPtr makeWithProvider(
           const std::type_index& typeIndex,
           const ProviderFct<void>& providerFct,
           const Deleter& deleterFct);
 
-      virtual ~TypeData();
+      static TypeDataPtr makeWithValue(
+          const std::type_index& typeIndex, void* value, const Deleter& deleter);
+
+      virtual ~TypeData() = default;
 
       TypeData() = delete;
       TypeData(const TypeData&) = delete;
@@ -36,8 +42,7 @@ namespace mf
       TypeData(const std::type_index& typeIndex, const Deleter& deleterFct);
 
       std::type_index typeIndex;
-      Deleter deleterFct = nullptr;
-      void* value = nullptr;
+      std::unique_ptr<void, Deleter> uniquePtr;
     };
 
     class TypeDataWithProvider : public TypeData {
@@ -51,6 +56,13 @@ namespace mf
 
      private:
       ProviderFct<void> providerFct = nullptr;
+    };
+
+    class TypeDataWithValue : public TypeData {
+     public:
+      TypeDataWithValue(const std::type_index& typeIndex, void* value, const Deleter& deleterFct);
+
+      void* getValueAndMakeIfNeeded() override;
     };
   }  // namespace InjectMe
 }  // namespace mf
