@@ -40,7 +40,10 @@ namespace mf
 
      protected:
       TypeData(const std::type_index& typeIndex, const Deleter& deleterFct);
+      void* getValue() const;
+      void resetValue(void* newValue);
 
+     private:
       std::type_index typeIndex;
       std::unique_ptr<void, Deleter> uniquePtr;
     };

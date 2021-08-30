@@ -25,6 +25,10 @@ namespace mf
       }
 
       DatabaseInstanceInsertion() = delete;
+      DatabaseInstanceInsertion(const DatabaseInstanceInsertion&) = delete;
+      DatabaseInstanceInsertion& operator=(const DatabaseInstanceInsertion&) = delete;
+      DatabaseInstanceInsertion(DatabaseInstanceInsertion&&) = delete;
+      DatabaseInstanceInsertion& operator=(DatabaseInstanceInsertion&&) = delete;
 
      private:
       std::type_index typeIndex;

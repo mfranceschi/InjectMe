@@ -38,6 +38,14 @@ namespace mf
       return bool(uniquePtr);
     }
 
+    void* TypeData::getValue() const {
+      return uniquePtr.get();
+    }
+
+    void TypeData::resetValue(void* newValue) {
+      uniquePtr.reset(newValue);
+    }
+
     TypeDataWithProvider::TypeDataWithProvider(
         const std::type_index& typeIndex,
         const ProviderFct<void>& providerFct,
@@ -46,21 +54,21 @@ namespace mf
     }
 
     void* TypeDataWithProvider::getValueAndMakeIfNeeded() {
-      if (!uniquePtr) {
+      if (not hasValue()) {
         DatabaseInstanceInsertion dii(getTypeIndex());
-        uniquePtr.reset(providerFct());
+        resetValue(providerFct());
       }
-      return uniquePtr.get();
+      return getValue();
     }
 
     TypeDataWithValue::TypeDataWithValue(
         const std::type_index& typeIndex, void* value, const Deleter& deleterFct)
         : TypeData(typeIndex, deleterFct) {
-      uniquePtr.reset(value);
+      resetValue(value);
     }
 
     void* TypeDataWithValue::getValueAndMakeIfNeeded() {
-      return uniquePtr.get();
+      return getValue();
     }
   }  // namespace InjectMe
 }  // namespace mf
