@@ -77,7 +77,7 @@ jobs:
 
       - name: CHECK - Clang-Tidy (static analysis, NOT on tests)
         if: ${{ steps.cmake-configure.outcome == 'success' }}
-        run: find ./InjectMe/ -name "*.cpp" -o -name "*.hpp" | xargs clang-tidy -p=${{ env.BUILD_DIR }} --header-filter='^\.\/InjectMe/.*\.hpp$'
+        run: find ./InjectMe/ -name "*.cpp" -o -name "*.hpp" | xargs clang-tidy -p=${{ env.BUILD_DIR }} --header-filter='^\.\/InjectMe/.*\.hpp$' --warnings-as-errors=*
 
       - name: CHECK - CMakeLint
         if: ${{ steps.install-dependencies.outcome == 'success' }}

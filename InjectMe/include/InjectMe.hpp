@@ -181,7 +181,7 @@ namespace mf
       template <typename T>
       ProviderFct<T> makeDefaultProvider() {
         return []() -> T* {
-          return new T;
+          return new T;  // NOLINT(cppcoreguidelines-owning-memory)
         };
       }
     }  // namespace internals

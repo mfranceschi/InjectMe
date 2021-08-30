@@ -25,14 +25,13 @@ namespace mf
         const ProviderFct<void>& providerFct,
         const Deleter& deleterFct) {
       // Note: we cannot use sd::make_shared because the constructors are private.
-      return std::shared_ptr<TypeData>(
-          new TypeDataWithProvider(typeIndex, providerFct, deleterFct));
+      return TypeDataPtr(new TypeDataWithProvider(typeIndex, providerFct, deleterFct));
     }
 
     TypeDataPtr TypeData::makeWithValue(
         const std::type_index& typeIndex, void* value, const Deleter& deleterFct) {
       // Note: we cannot use sd::make_shared because the constructors are private.
-      return std::shared_ptr<TypeData>(new TypeDataWithValue(typeIndex, value, deleterFct));
+      return TypeDataPtr(new TypeDataWithValue(typeIndex, value, deleterFct));
     }
 
     bool TypeData::hasValue() const {
