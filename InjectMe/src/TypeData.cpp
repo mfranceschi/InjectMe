@@ -1,5 +1,6 @@
 #include "TypeData.hpp"
 
+#include <ciso646>  // Windows seems to require it, even though cppreference says it's built-in
 #include <map>
 #include <set>
 #include <typeindex>
