@@ -13,13 +13,13 @@ namespace mf
     class TypeData {
      public:
       void* getValueAndMakeIfNeeded();
-      void provideValue();
 
       const std::type_index& getTypeIndex() const;
+      bool hasValue() const;
 
       TypeData(
           const std::type_index& typeIndex,
-          const ProviderFct<void>& proiderFct,
+          const ProviderFct<void>& providerFct,
           const Deleter& deleterFct);
 
       ~TypeData();
@@ -32,6 +32,8 @@ namespace mf
       TypeData& operator=(TypeData&&) = delete;
 
      private:
+      void provideValue();
+
       std::type_index typeIndex;
       ProviderFct<void> providerFct = nullptr;
       Deleter deleterFct = nullptr;

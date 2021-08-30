@@ -23,6 +23,7 @@ namespace mf
           const std::type_index& typeIndex,
           const ProviderFct<void>& providerFunction,
           const Deleter& deleterFunction);
+      void configure2(const TypeData& typeData);
 
       void reset();
 

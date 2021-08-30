@@ -32,6 +32,10 @@ namespace mf
       mapTypesToData.insert(std::make_pair(typeIndex, typeData));
     }
 
+    void Database::configure2(const TypeData& typeData) {
+      mapTypesToData.insert(std::make_pair(typeData.getTypeIndex(), typeData));
+    }
+
     void Database::reset() {
       mapTypesToData.clear();
     }

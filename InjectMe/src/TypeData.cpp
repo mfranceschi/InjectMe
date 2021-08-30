@@ -39,5 +39,9 @@ namespace mf
       DatabaseInstanceInsertion dii(getTypeIndex());
       value = providerFct();
     }
+
+    bool TypeData::hasValue() const {
+      return value != nullptr;
+    }
   }  // namespace InjectMe
 }  // namespace mf

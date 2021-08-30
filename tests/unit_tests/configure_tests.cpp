@@ -13,6 +13,7 @@ TEST(Configure, itThrowsIfPointerIsNull) {
 }
 
 TEST(Configure, itThrowsIfNoProviderHasBeenSet) {
+  GTEST_SKIP() << "Deprecated";
   Config::ConfigPtr configPtr = Config::getInstance();
   ASSERT_THROW(configure(configPtr), std::logic_error);
 }
@@ -28,5 +29,5 @@ class MockConfig : public Config {
 
 TEST(Configure, itThrowsIfInstanceIsNotConfigImpl) {
   Config::ConfigPtr configPtr = std::make_unique<MockConfig>();
-  ASSERT_THROW(configure(configPtr), std::invalid_argument);
+  ASSERT_THROW(configure(configPtr), exceptions::Internal);
 }
