@@ -32,7 +32,7 @@ namespace mf
         const auto& typeIndex = pair.first;
         const auto& providerFunction = pair.second.first;
         const auto& deleterFunction = pair.second.second;
-        TypeData typeData(typeIndex, providerFunction, deleterFunction);
+        auto typeData = TypeData::make(typeIndex, providerFunction, deleterFunction);
         database.configure2(typeData);
       }
     }

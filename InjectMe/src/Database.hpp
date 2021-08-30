@@ -23,7 +23,7 @@ namespace mf
           const std::type_index& typeIndex,
           const ProviderFct<void>& providerFunction,
           const Deleter& deleterFunction);
-      void configure2(const TypeData& typeData);
+      void configure2(const TypeDataPtr& typeData);
 
       void reset();
 
@@ -38,7 +38,7 @@ namespace mf
      private:
       Database() = default;
 
-      std::map<std::type_index, TypeData> mapTypesToData{};
+      std::map<std::type_index, TypeDataPtr> mapTypesToData{};
       std::set<std::type_index> typesInConstruction{};
     };
   }  // namespace InjectMe
