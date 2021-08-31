@@ -19,6 +19,52 @@ namespace mf
 
     using Deleter = std::function<void(void*)>;
 
+    namespace exceptions
+    {
+      class Exception : public std::exception {
+       public:
+        Exception(
+            const std::string& failingComponent,
+            const std::string& errorName,
+            const std::string& errorDetails);
+
+        const char* what() const noexcept override;
+
+       private:
+        std::string failingComponent;
+        std::string errorName;
+        std::string errorDetails;
+        std::string resultingString;
+      };
+
+      class InvalidPointer : public Exception {
+       public:
+        InvalidPointer(const std::string& failingComponent, const std::string& errorDetails = "");
+      };
+
+      class MissingProvider : public Exception {
+       public:
+        MissingProvider(const std::string& failingComponent, const char* typeName);
+      };
+
+      class DuplicateProvider : public Exception {
+       public:
+        DuplicateProvider(const std::string& failingComponent, const char* typeName);
+      };
+
+      class ProviderRecursion : public Exception {
+       public:
+        ProviderRecursion(const std::string& failingComponent, const char* typeName);
+      };
+
+      class Internal : public Exception {
+       public:
+        Internal(const std::string& errorDetails);
+      };
+    }  // namespace exceptions
+
+    using Exc = exceptions::Exception;
+
     namespace internals
     {
       template <typename T>
@@ -58,10 +104,29 @@ namespace mf
       template <typename T>
       class ConfiguratorBase {
        public:
-        virtual void done() = 0;
         ~ConfiguratorBase() = default;
+        explicit ConfiguratorBase(const ConfiguratorBase&) = delete;
+        explicit ConfiguratorBase(ConfiguratorBase&&) noexcept = default;
+        ConfiguratorBase& operator=(const ConfiguratorBase&) = delete;
+        ConfiguratorBase& operator=(ConfiguratorBase&&) noexcept = default;
+
+        virtual void done() = 0;
 
        protected:
+        ConfiguratorBase<T>() = default;
+        ConfiguratorBase<T>(T* theValue) : value(theValue) {
+        }
+        void setDeleterInternal(const DeleterFct<T>& newDeleter) {
+          deleter = newDeleter;
+        }
+        T* getValue() const {
+          return value;
+        }
+        const DeleterFct<T>& getDeleterInternal() const {
+          return deleter;
+        }
+
+       private:
         DeleterFct<T> deleter = std::default_delete<T>();
         T* value = nullptr;
       };
@@ -69,12 +134,12 @@ namespace mf
       template <typename T>
       class ConfiguratorWithProvider : public ConfiguratorBase<T> {
        public:
+        ConfiguratorWithProvider() = default;
         ConfiguratorWithProvider& setDeleter(const DeleterFct<T>& newDeleter) {
-          this->deleter = newDeleter;
+          setDeleterInternal(newDeleter);
           return *this;
         }
-        ConfiguratorWithProvider& setProvider(
-            const ProviderFct<T>& newProvider) {
+        ConfiguratorWithProvider& setProvider(const ProviderFct<T>& newProvider) {
           if (!newProvider) {
             throw exceptions::MissingProvider("configuration", typeid(T).name());
           }
@@ -82,7 +147,7 @@ namespace mf
           return *this;
         }
         void done() override {
-            internals::configureWithProvider(provider, this->deleter);
+          internals::configureWithProvider(provider, this->getDeleterInternal());
         }
 
        private:
@@ -92,15 +157,14 @@ namespace mf
       template <typename T>
       class ConfiguratorWithValue : public ConfiguratorBase<T> {
        public:
-        explicit ConfiguratorWithValue<T>(T* theValue) {
-          this->value = theValue;
+        explicit ConfiguratorWithValue<T>(T* theValue) : ConfiguratorBase<T>(theValue) {
         }
         ConfiguratorWithValue& setDeleter(const DeleterFct<T>& newDeleter) {
-          this->deleter = newDeleter;
+          setDeleterInternal(newDeleter);
           return *this;
         }
         void done() override {
-          internals::configureWithValue(this->value, this->deleter);
+          internals::configureWithValue(this->getValue(), this->getDeleterInternal());
         }
       };
     }  // namespace internals
@@ -190,52 +254,6 @@ namespace mf
      private:
       T* const pointer;
     };
-
-    namespace exceptions
-    {
-      class Exception : public std::exception {
-       public:
-        Exception(
-            const std::string& failingComponent,
-            const std::string& errorName,
-            const std::string& errorDetails);
-
-        const char* what() const noexcept override;
-
-       private:
-        std::string failingComponent;
-        std::string errorName;
-        std::string errorDetails;
-        std::string resultingString;
-      };
-
-      class InvalidPointer : public Exception {
-       public:
-        InvalidPointer(const std::string& failingComponent, const std::string& errorDetails = "");
-      };
-
-      class MissingProvider : public Exception {
-       public:
-        MissingProvider(const std::string& failingComponent, const char* typeName);
-      };
-
-      class DuplicateProvider : public Exception {
-       public:
-        DuplicateProvider(const std::string& failingComponent, const char* typeName);
-      };
-
-      class ProviderRecursion : public Exception {
-       public:
-        ProviderRecursion(const std::string& failingComponent, const char* typeName);
-      };
-
-      class Internal : public Exception {
-       public:
-        Internal(const std::string& errorDetails);
-      };
-    }  // namespace exceptions
-
-    using Exc = exceptions::Exception;
 
     namespace advanced
     {
