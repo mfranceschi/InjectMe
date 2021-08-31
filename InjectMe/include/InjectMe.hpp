@@ -28,6 +28,76 @@ namespace mf
       ProviderFct<T> makeDefaultProvider();
 
       void* injectForTypeOrThrow(const std::type_info&);
+
+      template <typename T>
+      void configureWithProvider(const ProviderFct<T>& provider, const DeleterFct<T>& deleter) {
+        ProviderFct<void> castedProvider = provider;
+        Deleter castedDeleter = [deleter](void* pointer) {
+          deleter(static_cast<T*>(pointer));
+        };
+        configureWithProviderNonTyped(castedProvider, castedDeleter, typeid(T));
+      }
+
+      template <typename T>
+      void configureWithValue(T* value, const DeleterFct<T>& deleter) {
+        Deleter castedDeleter = [deleter](void* pointer) {
+          deleter(static_cast<T*>(pointer));
+        };
+        configureWithValueNonTyped(value, castedDeleter, typeid(T));
+      }
+
+      void configureWithProviderNonTyped(
+          const ProviderFct<void>& provider, const DeleterFct<void>& deleter, const std::type_info& typeInfo);
+      void configureWithValueNonTyped(
+          void* value, const DeleterFct<void>& deleter, const std::type_info& typeInfo);
+
+      template <typename T>
+      class ConfiguratorBase {
+       public:
+        virtual void done() = 0;
+        ~ConfiguratorBase() = default;
+
+       protected:
+        DeleterFct<T> deleter = std::default_delete<T>();
+        T* value = nullptr;
+      };
+
+      template <typename T>
+      class ConfiguratorWithProvider : public ConfiguratorBase<T> {
+       public:
+        ConfiguratorWithProvider& setDeleter(const DeleterFct<T>& newDeleter) {
+          this->deleter = newDeleter;
+          return *this;
+        }
+        ConfiguratorWithProvider& setProvider(
+            const ProviderFct<T>& newProvider) { /* assert bool(newProvider) */
+          provider = newProvider;
+          return *this;
+        }
+        void done() override {
+            internals::configureWithProvider(provider, this->deleter);
+        }
+
+       private:
+        ProviderFct<T> provider = []() {
+          return new T;
+        };
+      };
+
+      template <typename T>
+      class ConfiguratorWithValue : public ConfiguratorBase<T> {
+       public:
+        ConfiguratorWithValue<T>(T* theValue) {
+          this->value = theValue;
+        }
+        ConfiguratorWithValue& setDeleter(const DeleterFct<T>& newDeleter) {
+          this->deleter = newDeleter;
+          return *this;
+        }
+        void done() override {
+          internals::configureWithValue(this->value, this->deleter);
+        }
+      };
     }  // namespace internals
 
     class Config {

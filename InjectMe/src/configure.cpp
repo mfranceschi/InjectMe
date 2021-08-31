@@ -7,6 +7,19 @@ namespace mf
 {
   namespace InjectMe
   {
+    void configureWithProviderNonTyped(
+        const ProviderFct<void>& provider,
+        const DeleterFct<void>& deleter,
+        const std::type_info& typeInfo) {
+      auto typeData = TypeData::makeWithProvider(std::type_index(typeInfo), provider, deleter);
+      Database::getDatabase().configureType(typeData);
+    }
+    void configureWithValueNonTyped(
+        void* value, const DeleterFct<void>& deleter, const std::type_info& typeInfo) {
+      auto typeData = TypeData::makeWithValue(std::type_index(typeInfo), value, deleter);
+      Database::getDatabase().configureType(typeData);
+    }
+
     void configure(const Config::ConfigPtr& configPtr) {
       if (!configPtr) {
         throw exceptions::InvalidPointer("configure", "configPtr is null");
@@ -33,7 +46,7 @@ namespace mf
         const auto& providerFunction = pair.second.first;
         const auto& deleterFunction = pair.second.second;
         auto typeData = TypeData::makeWithProvider(typeIndex, providerFunction, deleterFunction);
-        database.configure2(typeData);
+        database.configureType(typeData);
       }
     }
   }  // namespace InjectMe

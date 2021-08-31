@@ -16,7 +16,7 @@ namespace mf
 
       void* getForType(const std::type_index& typeIndex) const;
       bool knowsType(const std::type_index& typeIndex) const;
-      void configure2(const TypeDataPtr& typeData);
+      void configureType(const TypeDataPtr& typeData);
 
       void reset();
 

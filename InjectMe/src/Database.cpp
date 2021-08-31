@@ -24,7 +24,7 @@ namespace mf
       return mapTypesToData.find(typeIndex) != mapTypesToData.cend();
     }
 
-    void Database::configure2(const TypeDataPtr& typeData) {
+    void Database::configureType(const TypeDataPtr& typeData) {
       mapTypesToData.insert(std::make_pair(typeData->getTypeIndex(), typeData));
     }
 

@@ -118,3 +118,7 @@ build/
 
 # VS Code config
 .vscode/
+
+# VS config
+.vs/
+
