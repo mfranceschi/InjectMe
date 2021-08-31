@@ -29,6 +29,14 @@ namespace mf
 
       void* injectForTypeOrThrow(const std::type_info&);
 
+      void configureWithProviderNonTyped(
+          const ProviderFct<void>& provider,
+          const DeleterFct<void>& deleter,
+          const std::type_info& typeInfo);
+
+      void configureWithValueNonTyped(
+          void* value, const DeleterFct<void>& deleter, const std::type_info& typeInfo);
+
       template <typename T>
       void configureWithProvider(const ProviderFct<T>& provider, const DeleterFct<T>& deleter) {
         ProviderFct<void> castedProvider = provider;
@@ -40,16 +48,12 @@ namespace mf
 
       template <typename T>
       void configureWithValue(T* value, const DeleterFct<T>& deleter) {
+        void* castedValue = static_cast<void*>(value);
         Deleter castedDeleter = [deleter](void* pointer) {
           deleter(static_cast<T*>(pointer));
         };
-        configureWithValueNonTyped(value, castedDeleter, typeid(T));
+        configureWithValueNonTyped(castedValue, castedDeleter, typeid(T));
       }
-
-      void configureWithProviderNonTyped(
-          const ProviderFct<void>& provider, const DeleterFct<void>& deleter, const std::type_info& typeInfo);
-      void configureWithValueNonTyped(
-          void* value, const DeleterFct<void>& deleter, const std::type_info& typeInfo);
 
       template <typename T>
       class ConfiguratorBase {
@@ -70,7 +74,10 @@ namespace mf
           return *this;
         }
         ConfiguratorWithProvider& setProvider(
-            const ProviderFct<T>& newProvider) { /* assert bool(newProvider) */
+            const ProviderFct<T>& newProvider) {
+          if (!newProvider) {
+            throw exceptions::MissingProvider("configuration", typeid(T).name());
+          }
           provider = newProvider;
           return *this;
         }
@@ -79,15 +86,13 @@ namespace mf
         }
 
        private:
-        ProviderFct<T> provider = []() {
-          return new T;
-        };
+        ProviderFct<T> provider = internals::makeDefaultProvider<T>();
       };
 
       template <typename T>
       class ConfiguratorWithValue : public ConfiguratorBase<T> {
        public:
-        ConfiguratorWithValue<T>(T* theValue) {
+        explicit ConfiguratorWithValue<T>(T* theValue) {
           this->value = theValue;
         }
         ConfiguratorWithValue& setDeleter(const DeleterFct<T>& newDeleter) {
@@ -138,6 +143,16 @@ namespace mf
      * @throws std::logic_error if no provider has been set.
      */
     void configure(const Config::ConfigPtr&);
+
+    template <typename T>
+    auto configure() {
+      return internals::ConfiguratorWithProvider<T>();
+    }
+
+    template <typename T>
+    auto configureWithValue(T* value) {
+      return internals::ConfiguratorWithValue<T>(value);
+    }
 
     /**
      * @returns a pointer to an instance of the given type (create if never queried before).
