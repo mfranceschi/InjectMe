@@ -169,45 +169,6 @@ namespace mf
       };
     }  // namespace internals
 
-    class Config {
-     public:
-      using ConfigPtr = std::unique_ptr<Config>;
-
-      /**
-       * Creates and returns an instance.
-       */
-      static ConfigPtr getInstance();
-
-      /**
-       * Sets a provider function for the given type.
-       * @param provider The provider callable (no argument, returns a pointer).
-       * @returns this.
-       * @throws std::logic_error if a provider function is already registered for the given type.
-       */
-      template <typename T>
-      Config* add(
-          const ProviderFct<T>& provider = internals::makeDefaultProvider<T>(),
-          const DeleterFct<T>& deleter = internals::makeDefaultDeleter<T>());
-
-      explicit Config(const Config&) = delete;
-      explicit Config(const Config&&) = delete;
-      Config& operator=(const Config&) = delete;
-      Config& operator=(const Config&&) = delete;
-      virtual ~Config() = default;
-
-     protected:
-      Config() = default;
-      virtual void setProviderForTypeOrThrow(
-          const ProviderFct<void>&, const std::type_info&, const Deleter&) = 0;
-    };
-
-    /**
-     * Configures InjectMe with the given Config instance.
-     * @throws std::invalid_argument if the pointer is invalid.
-     * @throws std::logic_error if no provider has been set.
-     */
-    void configure(const Config::ConfigPtr&);
-
     template <typename T>
     auto configure() {
       return internals::ConfiguratorWithProvider<T>();
@@ -288,19 +249,6 @@ namespace mf
         };
       }
     }  // namespace internals
-
-    template <typename T>
-    Config* Config::add(const ProviderFct<T>& provider, const DeleterFct<T>& deleter) {
-      static_assert(!std::is_array<T>::value, "Array types are not allowed.");
-      const std::type_info& typeInfo = typeid(T);
-      ProviderFct<void> castedProvider = provider;
-      Deleter castedDeleter = [deleter](void* pointer) {
-        deleter(static_cast<T*>(pointer));
-      };
-
-      this->setProviderForTypeOrThrow(castedProvider, typeInfo, castedDeleter);
-      return this;
-    }
 
     template <typename T>
     T* inject() {
