@@ -10,14 +10,14 @@
 static constexpr double THE_VALUE = 3.1415;
 
 void configureInjector() {
-  auto injectMeConfig = mf::InjectMe::Config::getInstance();
+  using namespace mf::InjectMe;
 
-  injectMeConfig->add<double>([]() {
-    callCounter++;
-    return new double(THE_VALUE);
-  });
-
-  configure(injectMeConfig);
+  configure<double>()
+      .setProvider([]() {
+        callCounter++;
+        return new double(THE_VALUE);
+      })
+      .done();
 }
 
 void runChecks() {
