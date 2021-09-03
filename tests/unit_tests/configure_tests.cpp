@@ -7,29 +7,83 @@
 
 using namespace mf::InjectMe;
 
-#if 0  // TODO fix tests according to new config API
-TEST(Configure, itThrowsIfPointerIsNull) {
-  Config::ConfigPtr configPtr = nullptr;
-  ASSERT_THROW(configure(configPtr), exceptions::InvalidPointer);
+static void validDeleter(int*) {
 }
 
-TEST(Configure, itThrowsIfNoProviderHasBeenSet) {
-  GTEST_SKIP() << "Deprecated";
-  Config::ConfigPtr configPtr = Config::getInstance();
-  ASSERT_THROW(configure(configPtr), std::logic_error);
+static int* validProvider() {
+  return new int(1);
 }
 
-class MockConfig : public Config {
- public:
-  MOCK_METHOD(
-      void,
-      setProviderForTypeOrThrow,
-      (const ProviderFct<void>&, const std::type_info&, const Deleter&),
-      (override));
+static int* failingProvider() {
+  throw std::runtime_error("The provider failed successfully!");
+}
+
+class ConfigureTestsBase : public ::testing::Test {
+ protected:
+  void SetUp() override {
+    ::mf::InjectMe::advanced::reset();
+  }
+
+  void TearDown() override {
+    ::mf::InjectMe::advanced::reset();
+  }
 };
 
-TEST(Configure, itThrowsIfInstanceIsNotConfigImpl) {
-  Config::ConfigPtr configPtr = std::make_unique<MockConfig>();
-  ASSERT_THROW(configure(configPtr), exceptions::Internal);
+class ConfigureWithProvider : public ConfigureTestsBase {};
+
+TEST_F(ConfigureWithProvider, itCanConfigureWithoutParameters) {
+  EXPECT_NO_THROW(configure<int>().done());
 }
-#endif
+
+TEST_F(ConfigureWithProvider, itCanConfigureWithValidProvider) {
+  EXPECT_NO_THROW(configure<int>().setProvider(validProvider));
+}
+
+TEST_F(ConfigureWithProvider, itThrowsOnNullProvider) {
+  EXPECT_THROW(configure<int>().setProvider(nullptr).done(), exceptions::MissingProvider);
+}
+
+TEST_F(ConfigureWithProvider, itCanConfigureWithFailingProvider) {
+  EXPECT_NO_THROW(configure<int>().setProvider(failingProvider));
+}
+
+TEST_F(ConfigureWithProvider, itThrowsOnDuplicateForType) {
+  EXPECT_NO_THROW(configure<int>().done());
+  EXPECT_THROW(configure<int>().setProvider(validProvider).done(), exceptions::DuplicateProvider);
+}
+
+TEST_F(ConfigureWithProvider, itCanConfigureWithDeleter) {
+  EXPECT_NO_THROW(configure<int>().setDeleter(validDeleter).done());
+}
+
+TEST_F(ConfigureWithProvider, itCanConfigureWithNullDeleter) {
+  EXPECT_NO_THROW(configure<int>().setDeleter(nullptr).done());
+}
+
+class ConfigureWithValue : public ConfigureTestsBase {
+ protected:
+  int* validInt = new int(2);
+};
+
+TEST_F(ConfigureWithValue, itCanConfigureWithValue) {
+  EXPECT_NO_THROW(configureWithValue<int>(validInt).done());
+}
+
+TEST_F(ConfigureWithValue, itThrowsOnNullValue) {
+  EXPECT_THROW(configureWithValue<int>(nullptr).done(), exceptions::InvalidPointer);
+}
+
+TEST_F(ConfigureWithValue, itCanConfigureWithDeleter) {
+  EXPECT_NO_THROW(configureWithValue<int>(validInt).setDeleter(validDeleter).done());
+}
+
+TEST_F(ConfigureWithValue, itCanConfigureWithNullDeleter) {
+  EXPECT_NO_THROW(configureWithValue<int>(validInt).setDeleter(nullptr).done());
+}
+
+TEST_F(ConfigureWithValue, itThrowsOnDuplicateForType) {
+  EXPECT_NO_THROW(configureWithValue<int>(validInt).done());
+  int* anotherInt = new int(42);
+  auto configureHelper = configureWithValue<int>(anotherInt);
+  EXPECT_THROW(configureHelper.setDeleter(validDeleter).done(), exceptions::DuplicateProvider);
+}

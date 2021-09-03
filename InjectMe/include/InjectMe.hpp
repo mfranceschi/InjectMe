@@ -115,9 +115,16 @@ namespace mf
        protected:
         ConfiguratorBase<T>() = default;
         ConfiguratorBase<T>(T* theValue) : value(theValue) {
+          if (value == nullptr) {
+            throw exceptions::InvalidPointer(
+                "configure", std::string("invalid provided value for type \"") +
+                                 std::string(typeid(T).name()) + std::string("\"."));
+          }
         }
         void setDeleterInternal(const DeleterFct<T>& newDeleter) {
-          deleter = newDeleter;
+          static auto DUMMY_DELETER = [](...) {
+          };
+          deleter = newDeleter ? newDeleter : DUMMY_DELETER;
         }
         T* getValue() const {
           return value;
@@ -136,7 +143,7 @@ namespace mf
        public:
         ConfiguratorWithProvider() = default;
         ConfiguratorWithProvider& setDeleter(const DeleterFct<T>& newDeleter) {
-          setDeleterInternal(newDeleter);
+          this->setDeleterInternal(newDeleter);
           return *this;
         }
         ConfiguratorWithProvider& setProvider(const ProviderFct<T>& newProvider) {
@@ -160,7 +167,7 @@ namespace mf
         explicit ConfiguratorWithValue<T>(T* theValue) : ConfiguratorBase<T>(theValue) {
         }
         ConfiguratorWithValue& setDeleter(const DeleterFct<T>& newDeleter) {
-          setDeleterInternal(newDeleter);
+          this->setDeleterInternal(newDeleter);
           return *this;
         }
         void done() override {

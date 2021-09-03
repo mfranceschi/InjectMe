@@ -12,7 +12,6 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(
     InjectMe_GoogleTests
-    Config_tests.cpp
     configure_tests.cpp
     dummy_function_tests.cpp
     tests_main.cpp
