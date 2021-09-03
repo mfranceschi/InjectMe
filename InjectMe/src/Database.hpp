@@ -30,6 +30,7 @@ namespace mf
 
      private:
       Database() = default;
+      void throwForDuplicate(const std::type_index& typeIndex) const;
 
       std::map<std::type_index, TypeDataPtr> mapTypesToData{};
     };

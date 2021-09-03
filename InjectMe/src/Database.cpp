@@ -25,11 +25,19 @@ namespace mf
     }
 
     void Database::configureType(const TypeDataPtr& typeData) {
-      mapTypesToData.insert(std::make_pair(typeData->getTypeIndex(), typeData));
+      const auto insertResult =
+          mapTypesToData.insert(std::make_pair(typeData->getTypeIndex(), typeData));
+      if (!insertResult.second) {
+        throwForDuplicate(typeData->getTypeIndex());
+      }
     }
 
     void Database::reset() {
       mapTypesToData.clear();
+    }
+
+    void Database::throwForDuplicate(const std::type_index& typeIndex) const {
+      throw exceptions::DuplicateProvider("configure", typeIndex.name());
     }
 
     Database::~Database() {
