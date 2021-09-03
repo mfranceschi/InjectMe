@@ -27,9 +27,9 @@ foreach(Integration_Test_Folder ${Integration_Tests_Folders})
       COMMAND valgrind ${VALGRIND_OPTIONS} $<TARGET_FILE:${Integration_Test_Folder}>
     )
     set_tests_properties(
-        "Integration_Test_${Integration_Test_Folder}_Memcheck_Valgrind"
-        PROPERTIES
-          DEPENDS "Integration_Test_${Integration_Test_Folder}"
+      "Integration_Test_${Integration_Test_Folder}_Memcheck_Valgrind"
+      PROPERTIES
+        DEPENDS "Integration_Test_${Integration_Test_Folder}"
     )
   endif()
 endforeach()

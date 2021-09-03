@@ -25,9 +25,8 @@ namespace mf
     template <typename T>
     class Injected {
      public:
-      Injected<T>() : pointer(inject<T>()) {
-      }
-      Injected<T>(T* pointer) : pointer(pointer) {
+      Injected<T>() = default;
+      explicit Injected<T>(T* pointer) : pointer(pointer) {
       }
       Injected(const Injected<T>&) = default;
       Injected(Injected<T>&&) noexcept = default;
@@ -49,7 +48,7 @@ namespace mf
       }
 
      private:
-      T* const pointer;
+      T* pointer = inject<T>();
     };
   }  // namespace InjectMe
 }  // namespace mf

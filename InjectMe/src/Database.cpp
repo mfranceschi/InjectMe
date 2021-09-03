@@ -32,6 +32,12 @@ namespace mf
       }
     }
 
+    void Database::provideForAll() {
+      for (const auto& item : mapTypesToData) {
+        item.second->getValueAndMakeIfNeeded();
+      }
+    }
+
     void Database::reset() {
       mapTypesToData.clear();
     }

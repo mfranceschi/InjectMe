@@ -17,7 +17,7 @@ namespace mf
       void* getForType(const std::type_index& typeIndex) const;
       bool knowsType(const std::type_index& typeIndex) const;
       void configureType(const TypeDataPtr& typeData);
-
+      void provideForAll();
       void reset();
 
       ~Database();
@@ -25,8 +25,6 @@ namespace mf
       Database& operator=(const Database&) = delete;
       Database(Database&&) = delete;
       Database& operator=(Database&&) = delete;
-
-      friend class DatabaseInstanceInsertion;
 
      private:
       Database() = default;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "InjectMe_advanced.hpp"
 #include "InjectMe_configuration.hpp"
 #include "InjectMe_exceptions.hpp"
 #include "InjectMe_inject.hpp"
