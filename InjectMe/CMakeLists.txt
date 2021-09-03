@@ -2,6 +2,8 @@
 add_library(MF_InjectMe STATIC)
 
 set(PUBLIC_HEADERS
+    include/InjectMe_exceptions.hpp
+    include/InjectMe_types.hpp
     include/InjectMe.hpp
 )
 set(PRIVATE_HEADERS
