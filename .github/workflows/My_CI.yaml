@@ -32,15 +32,18 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=${{ matrix.CMake_Config }} -S . -B ${{ env.BUILD_DIR }}
 
       - name: BUILD - CMake build
+        id: cmake-build
         run: |
           cmake --build ${{ env.BUILD_DIR }} -j10 --config=${{ matrix.CMake_Config}} 
 
       - name: TEST - CTest for unit tests
+        if: ${{ steps.cmake-build.outcome == 'success' }}
         working-directory: ${{ env.BUILD_DIR }}
         run: |
           ctest -j10 -C ${{ matrix.CMake_Config }} -T test --output-on-failure -L "UnitTests"
 
       - name: TEST - CTest for integration tests
+        if: ${{ steps.cmake-build.outcome == 'success' }}
         working-directory: ${{ env.BUILD_DIR }}
         run: |
           ctest -j10 -C ${{ matrix.CMake_Config }} -T test --output-on-failure -L "IntegrationTests"
