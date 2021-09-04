@@ -6,6 +6,7 @@ set(Integration_Tests_Folders
   3_configure_complex_type
   4_triple_nested_injections
   5_recursion_is_caught
+  6_possible_use_case
 )
 
 find_program(

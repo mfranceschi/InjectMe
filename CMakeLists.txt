@@ -11,5 +11,7 @@ endif()
 
 add_subdirectory(InjectMe)
 
-enable_testing()
-add_subdirectory(tests)
+include(CTest)
+if (BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
