@@ -42,7 +42,7 @@ namespace mf
       mapTypesToData.clear();
     }
 
-    void Database::throwForDuplicate(const std::type_index& typeIndex) const {
+    void Database::throwForDuplicate(const std::type_index& typeIndex) {
       throw exceptions::DuplicateProvider("configure", typeIndex.name());
     }
 
