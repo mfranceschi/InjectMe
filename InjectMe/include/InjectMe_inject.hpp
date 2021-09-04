@@ -34,13 +34,13 @@ namespace mf
       Injected<T>& operator=(Injected<T>&&) noexcept = default;
       ~Injected() = default;
 
-      T* get() {
+      T* get() const {
         return pointer;
       }
-      T& operator*() {
+      T& operator*() const {
         return *pointer;
       }
-      T* operator->() {
+      T* operator->() const {
         return pointer;
       }
       operator T*() {
