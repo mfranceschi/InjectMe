@@ -69,17 +69,23 @@ class Api {
 };
 
 void configureInjectors() {
-  configure<ClientDAO>()
-      .setProvider([]() {
-        return new ClientDAOImpl;
-      })
-      .done();
+  configure<ClientDAO>().setProvider(makeProvider<ClientDAOImpl>()).done();
   configure<Controller>().done();
-  configure<Api>()
-      .setProvider([]() {
-        return new Api(1);
-      })
-      .done();
+  configure<Api>().setProvider(makeProvider<Api>(1)).done();
+}
+
+void checkAndRun() {
+  Injected<Api> api;
+
+  const auto apiGetClient1 = api->getClient(1, 1);
+  if (apiGetClient1.compare("Client{id=1}") != 0) {
+    throw std::runtime_error("Wrong value! client id string");
+  }
+
+  const auto apiGetClientFailed = api->getClient(1, 2);
+  if (!apiGetClient1.empty()) {
+    throw std::runtime_error("Wrong value! client string should be empty");
+  }
 }
 
 int main() {

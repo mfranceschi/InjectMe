@@ -116,8 +116,6 @@ namespace mf
           provider = newProvider;
           return *this;
         }
-        template <typename TypeConvertibleToT>
-        ConfiguratorWithProvider& setProvider(const ProviderFct<TypeConvertibleToT>& newProvider);
         void done() override {
           internals::configureWithProvider(provider, this->getDeleterInternal());
         }
@@ -125,14 +123,6 @@ namespace mf
        private:
         ProviderFct<T> provider = internals::makeDefaultProvider<T>();
       };
-
-      template <typename T>
-      template <typename TypeConvertibleToT>
-      ConfiguratorWithProvider<T>& ConfiguratorWithProvider<T>::setProvider(
-          const ProviderFct<TypeConvertibleToT>& newProvider) {
-        static_assert(std::is_convertible<TypeConvertibleToT, T>::value, "Type error");
-        return setProvider(ProviderFct<T>(newProvider));
-      }
 
       template <typename T>
       class ConfiguratorWithValue : public ConfiguratorBase<T> {
@@ -157,6 +147,13 @@ namespace mf
     template <typename T>
     auto configureWithValue(T* value) {
       return internals::ConfiguratorWithValue<T>(value);
+    }
+
+    template <typename T, typename... Args>
+    ProviderFct<T> makeProvider(Args... args) {
+      return [=]() -> T* {
+        return new T(args...);  // NOLINT(cppcoreguidelines-owning-memory)
+      };
     }
   }  // namespace InjectMe
 }  // namespace mf
