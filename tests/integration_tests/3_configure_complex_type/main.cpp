@@ -29,7 +29,7 @@ void configureInjector() {
   using namespace mf::InjectMe;
   configure<MyType>()
       .setProvider([]() {
-        callCounter++;
+        getCallCounter().addCall("MyType");
         return new MyType();
       })
       .done();

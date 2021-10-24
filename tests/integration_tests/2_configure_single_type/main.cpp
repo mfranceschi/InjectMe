@@ -14,7 +14,7 @@ void configureInjector() {
 
   configure<double>()
       .setProvider([]() {
-        callCounter++;
+        getCallCounter().addCall("double");
         return new double(THE_VALUE);
       })
       .done();
