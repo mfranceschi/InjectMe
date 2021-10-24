@@ -3,6 +3,7 @@
 #include <limits>
 #include <sstream>
 #include <string>
+#include <vector>
 
 /**
  * If the given @c expressionToTest is false, then print @c errorMessage on stderr and exit.
@@ -26,20 +27,40 @@ inline bool doublesAreAlmostEqual(double x, double y) {
          || std::fabs(x - y) < std::numeric_limits<double>::min();
 }
 
-/**
- * Use this for counting and then check its value with @c checkCallCount.
- */
-static unsigned int callCounter = 0;
+class CallCounter {
+ public:
+  CallCounter() = default;
+  void addCall(const std::string& text = "(no text)") {
+    calls.push_back(text);
+  }
+  std::size_t getCounter() const {
+    return calls.size();
+  }
+  bool checkCounterWith(const std::size_t& value) const {
+    return getCounter() == value;
+  }
+  std::string getCallTextAtIndex(const std::size_t& index) const {
+    return calls.at(index);
+  }
+
+ private:
+  std::vector<std::string> calls;
+};
+
+inline CallCounter& getCallCounter() {
+  static CallCounter cc;
+  return cc;
+}
 
 /**
  * Helper for testing if @c callCounter==expectedCallCount.
  */
 inline void checkCallCount(unsigned int expectedCallCount) {
-  bool testResult = callCounter == expectedCallCount;
+  bool testResult = getCallCounter().checkCounterWith(expectedCallCount);
 
   std::ostringstream errorMessageStream;
-  errorMessageStream << "Unexpected call count (expected " << expectedCallCount
-                     << "): " << callCounter;
+  errorMessageStream << "Unexpected call count: expected " << expectedCallCount << ", got "
+                     << getCallCounter().getCounter();
   auto errorMessage = errorMessageStream.str();
 
   myAssert(testResult, errorMessage);

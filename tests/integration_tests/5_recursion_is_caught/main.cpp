@@ -38,11 +38,14 @@ class C {
 };
 
 void configureInjector() {
-  auto configPtr = Config::getInstance();
-  configPtr->add<A>()->add<B>()->add<C>()->add<int>([]() {
-    return new int(42);
-  });
-  configure(configPtr);
+  configure<A>().done();
+  configure<B>().done();
+  configure<C>().done();
+  configure<int>()
+      .setProvider([]() {
+        return new int(42);
+      })
+      .done();
 }
 
 void checkRecursionOfAIsCaught() {

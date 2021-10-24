@@ -24,12 +24,26 @@ namespace mf
       return mapTypesToData.find(typeIndex) != mapTypesToData.cend();
     }
 
-    void Database::configure2(const TypeDataPtr& typeData) {
-      mapTypesToData.insert(std::make_pair(typeData->getTypeIndex(), typeData));
+    void Database::configureType(const TypeDataPtr& typeData) {
+      const auto insertResult =
+          mapTypesToData.insert(std::make_pair(typeData->getTypeIndex(), typeData));
+      if (!insertResult.second) {
+        throwForDuplicate(typeData->getTypeIndex());
+      }
+    }
+
+    void Database::provideForAll() {
+      for (const auto& item : mapTypesToData) {
+        item.second->getValueAndMakeIfNeeded();
+      }
     }
 
     void Database::reset() {
       mapTypesToData.clear();
+    }
+
+    void Database::throwForDuplicate(const std::type_index& typeIndex) {
+      throw exceptions::DuplicateProvider("configure", typeIndex.name());
     }
 
     Database::~Database() {

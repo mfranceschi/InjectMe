@@ -26,14 +26,13 @@ class MyType {
 };
 
 void configureInjector() {
-  auto injectMeConfig = mf::InjectMe::Config::getInstance();
-
-  injectMeConfig->add<MyType>([]() {
-    callCounter++;
-    return new MyType();
-  });
-
-  configure(injectMeConfig);
+  using namespace mf::InjectMe;
+  configure<MyType>()
+      .setProvider([]() {
+        getCallCounter().addCall("MyType");
+        return new MyType();
+      })
+      .done();
 }
 
 void runChecks() {
