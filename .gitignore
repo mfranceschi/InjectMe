@@ -116,6 +116,7 @@ _deps
 # CMake build directories
 build/
 out/
+cmake-build-debug/
 
 # VS Code config
 .vscode/
