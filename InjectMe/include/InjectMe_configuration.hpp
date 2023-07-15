@@ -73,11 +73,11 @@ namespace mf
       template <typename T, class ConfigClass>
       class ConfiguratorBase {
        public:
-        ~ConfiguratorBase() = default;
         explicit ConfiguratorBase(const ConfiguratorBase&) = delete;
         ConfiguratorBase& operator=(const ConfiguratorBase&) = delete;
         explicit ConfiguratorBase(ConfiguratorBase&&) noexcept = default;
         ConfiguratorBase& operator=(ConfiguratorBase&&) noexcept = default;
+        ~ConfiguratorBase() = default;
 
         ConfigClass& setDeleter(const DeleterFct<T>& newDeleter) {
           static auto DUMMY_DELETER = [](...) {

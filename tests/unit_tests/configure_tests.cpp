@@ -1,4 +1,3 @@
-#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
 #include <stdexcept>
@@ -36,7 +35,7 @@ TEST_F(ConfigureWithProvider, itCanConfigureWithoutParameters) {
 }
 
 TEST_F(ConfigureWithProvider, itCanConfigureWithValidProvider) {
-  EXPECT_NO_THROW(configure<int>().setProvider(validProvider));
+  EXPECT_NO_THROW(configure<int>().setProvider(validProvider).done());
 }
 
 TEST_F(ConfigureWithProvider, itThrowsOnNullProvider) {
@@ -44,7 +43,7 @@ TEST_F(ConfigureWithProvider, itThrowsOnNullProvider) {
 }
 
 TEST_F(ConfigureWithProvider, itCanConfigureWithFailingProvider) {
-  EXPECT_NO_THROW(configure<int>().setProvider(failingProvider));
+  EXPECT_NO_THROW(configure<int>().setProvider(failingProvider).done());
 }
 
 TEST_F(ConfigureWithProvider, itThrowsOnDuplicateForType) {
@@ -83,7 +82,7 @@ TEST_F(ConfigureWithValue, itCanConfigureWithNullDeleter) {
 
 TEST_F(ConfigureWithValue, itThrowsOnDuplicateForType) {
   EXPECT_NO_THROW(configureWithValue<int>(validInt).done());
-  int* anotherInt = new int(42);
-  auto configureHelper = configureWithValue<int>(anotherInt);
+  const auto anotherInt = std::make_unique<int>(42);
+  auto configureHelper = configureWithValue<int>(anotherInt.get());
   EXPECT_THROW(configureHelper.setDeleter(validDeleter).done(), exceptions::DuplicateProvider);
 }

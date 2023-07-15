@@ -22,6 +22,9 @@ namespace mf
       return static_cast<T*>(internals::injectForTypeOrThrow(typeid(T)));
     }
 
+    /**
+     * Smart pointer-like! Cannot contain a null pointer.
+     */
     template <typename T>
     class Injected {
      public:

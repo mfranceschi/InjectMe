@@ -58,6 +58,11 @@ namespace mf
         ProviderRecursion(const std::string& failingComponent, const char* typeName);
       };
 
+      class DoneHasNotBeenCalled : public Exception {
+       public:
+        DoneHasNotBeenCalled(const char* typeName);
+      };
+
       class Internal : public Exception {
        public:
         Internal(const std::string& errorDetails);
