@@ -113,8 +113,16 @@ _deps
 
 # End of https://www.toptal.com/developers/gitignore/api/c++,git,cmake,ninja,c
 
-# CMake build directory
+# CMake build directories
 build/
+out/
 
 # VS Code config
 .vscode/
+
+# VS config
+.vs/
+
+# CLion
+cmake-build-debug/
+.idea/

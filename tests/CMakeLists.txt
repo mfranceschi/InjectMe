@@ -1,3 +1,3 @@
-include(CTest)
-add_subdirectory(integration_tests)
 add_subdirectory(unit_tests)
+add_subdirectory(integration_tests)
+add_subdirectory(performance_tests)

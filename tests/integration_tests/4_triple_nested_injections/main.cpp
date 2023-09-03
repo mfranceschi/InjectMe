@@ -41,9 +41,9 @@ class C {
 };
 
 void configureInjectMe() {
-  auto config = Config::getInstance();
-  config->add<A>()->add<B>()->add<C>();
-  configure(config);
+  configure<A>().done();
+  configure<B>().done();
+  configure<C>().done();
 }
 
 void runChecks() {

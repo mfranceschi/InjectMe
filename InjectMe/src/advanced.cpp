@@ -6,6 +6,10 @@ namespace mf
   {
     namespace advanced
     {
+      void callAllProviders() {
+        Database::getDatabase().provideForAll();
+      }
+
       void reset() {
         Database::getDatabase().reset();
       }

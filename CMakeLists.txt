@@ -3,11 +3,15 @@ project(Mfranceschi_InjectMe LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  add_compile_options(-Wall -Wextra -Wabi=11 -Wpedantic)
+if(MSVC)
+    add_compile_options(/W4 /WX)
+else()
+    add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 endif()
 
 add_subdirectory(InjectMe)
 
-enable_testing()
-add_subdirectory(tests)
+include(CTest)
+if (BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
