@@ -1,0 +1,5 @@
+- Use the python script to generate a file in the build folder with 10 types
+- Build and run the CMake target
+- Repeat with 1e2, 1e3, 1e4, 1e5 types and stop when build time exceeds 30s AND/OR when program takes >30s to run.
+
+- Make the same kind of Python script, but with a small number of types but a deep nested dependency tree.

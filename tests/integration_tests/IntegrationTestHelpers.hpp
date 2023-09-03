@@ -6,7 +6,7 @@
 #include <vector>
 
 /**
- * If the given @c expressionToTest is false, then print @c errorMessage on stderr and exit.
+ * If the given @c expressionToTest is false, then prints @c errorMessage on stderr and exit.
  * Otherwise no-op.
  */
 inline void myAssert(bool expressionToTest, const std::string& errorMessage) {
@@ -56,7 +56,7 @@ inline CallCounter& getCallCounter() {
  * Helper for testing if @c callCounter==expectedCallCount.
  */
 inline void checkCallCount(unsigned int expectedCallCount) {
-  bool testResult = getCallCounter().checkCounterWith(expectedCallCount);
+  const bool testResult = getCallCounter().checkCounterWith(expectedCallCount);
 
   std::ostringstream errorMessageStream;
   errorMessageStream << "Unexpected call count: expected " << expectedCallCount << ", got "

@@ -12,9 +12,9 @@ namespace mf
   {
     /**
      * Dummy function for testing purpose.
-     * @return the sum of a and b.
+     * @return the sum.
      * @throws std::overflow_error or std::underflow_error.
      */
-    int addIntegersOrThrow(int a, int b);
+    int addIntegersOrThrow(int numberA, int numberB);
   }  // namespace InjectMe
 }  // namespace mf
